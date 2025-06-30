@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" type="text/css" href="./mbweb.css" />
+  <script src="./jssip-3.10.0.js"></script>
+  <title>MBWebPhone demo</title>
+</head>
+
+<body>
+  <h2>MBWebPhone demo from mbstudio.cn</h2>
+  <div class="content">
+    <div id="alice" class="user">
+      <div class="video">
+        <video id="remote-video" width="100%" autoplay>
+          <p>Your browser doesn't support HTML5 video.</p>
+        </video>
+        <div class="video-local">
+          <video id="local-video" width="100%" autoplay>
+            <p>Your browser doesn't support HTML5 video.</p>
+          </video>
+        </div>
+      </div>    
+      
+      <div>
+        <span class="content" id="status">ready</span>
+      </div>
+
+      <div>
+        <input type="text" value="1002" id="callee"></input>
+        <button id="call">呼出/应答</button>
+        <button id="hangup">挂断/取消</button>
+      </div>
+    </div>    
+  </div>
+
+  <script src="./mbphone.js"></script>
+</body>
+</html>
