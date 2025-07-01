@@ -1,6 +1,7 @@
 const server = {
   domain: '172.21.2.210',
   wsServers: 'wss://172.21.2.210:7443',
+  stunServer: 'stun:172.21.2.210:3478'
 };
 
 const user = {
@@ -153,9 +154,9 @@ var callOptions = {
   },
   'mediaConstraints': {'audio': true, 'video': false},
   'pcConfig': {
-    'iceServers': [{urls: 'stun:stun.l.google.com:19302'}]
+      'iceServers': [{urls: server.stunServer}]
   },
-  sessionTimersExpires: 3600  //过短也会呼叫失败
+  sessionTimersExpires: 120  //freeswitch过短会呼叫失败
 };
 
 //ui click cb
@@ -166,7 +167,7 @@ callBtn.addEventListener('click', function(){
     callSession.answer({
       'mediaConstraints': {'audio': true, 'video': vCallCheck.checked},
       'pcConfig': {
-        'iceServers': [{urls: 'stun:stun.l.google.com:19302'}]
+        'iceServers': [{urls: server.stunServer}]
       }
     });
     infoLb.innerText = "应答接通";

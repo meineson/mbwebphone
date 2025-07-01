@@ -4,6 +4,7 @@ using freeswitch docker:
 ```
 #docker pull safarov/freeswitch
 #docker run -d --name fs -v  ~/fscfg:/etc/freeswitch --net=host safarov/freeswitch
+#docker run -d --name ice --network=host coturn/coturn
 
 #cd ~/fscfg/
 #nano vars.xml
@@ -20,6 +21,11 @@ using freeswitch docker:
 <!-- RTP port range -->
 <param name="rtp-start-port" value="8000"/>
 <param name="rtp-end-port" value="8100"/>
+
+#nano autoload_configs/acl.conf.xml 
+<list name="wan.auto" default="allow">
+  <node type="allow" cidr="172.21.0.0/16"/>  #fix coturn 488 error
+</list>   
 
 #docker restart fs
 #docker exec -ti fs fs_cli
