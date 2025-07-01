@@ -11,10 +11,13 @@
 
 <body>
   <h2>MBWebPhone demo from mbstudio.cn</h2>
+  <div>
+    <span>最新源码：<a href="https://github.com/meineson/mbwebphone">https://github.com/meineson/mbwebphone</a></span>
+  </div>
   <div class="content">
-    <div id="alice" class="user">
-      <div class="video">
-        <video id="remote-video" width="100%" autoplay>
+    <div class="user">
+      <div class="video" id="vdiv" style="display:none;">
+        <video id="remote-video" width="100%" autoplay visible>
           <p>Your browser doesn't support HTML5 video.</p>
         </video>
         <div class="video-local">
@@ -22,16 +25,17 @@
             <p>Your browser doesn't support HTML5 video.</p>
           </video>
         </div>
-      </div>    
+      </div>
       
       <div>
         <span class="content" id="status">ready</span>
       </div>
 
       <div>
+        <input type="checkbox" id="vCall">视频通话</input>
         <input type="text" value="1002" id="callee"></input>
-        <button id="call">呼出/应答</button>
-        <button id="hangup">挂断/取消</button>
+        <button id="call" disabled>呼出/应答</button>
+        <button id="hangup" disabled>挂断/取消</button>
       </div>
     </div>    
   </div>

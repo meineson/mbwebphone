@@ -11,24 +11,17 @@ const user = {
     regExpires: 180
 }
 
-var views = {
+const views = {
   'selfView':   document.getElementById('local-video'),
   'remoteView': document.getElementById('remote-video')
 };
 
-function add_view(){
-  callSession.connection.addEventListener('track', ({ track, streams: [stream] }) => {
-    console.log('add track', track, stream);
-    views.remoteView.srcObject = stream;
-  });
-
-  callSession.connection.addEventListener('addstream', function(e){
-    console.log("remote stream:", e.stream);
-
-    views.remoteView.srcObject = e.stream;
-    views.selfView.srcObject = callSession.connection.getLocalStreams()[0];
-  });
-}
+const vdiv = document.getElementById('vdiv');
+const vCallCheck = document.getElementById('vCall');
+const callNum = document.getElementById("callee");
+const callBtn = document.getElementById('call');
+const hangBtn = document.getElementById('hangup');
+const infoLb = document.getElementById('status');
 
 var socket = new JsSIP.WebSocketInterface(server.wsServers);
 var configuration = {
@@ -46,23 +39,48 @@ var configuration = {
 var myPhone = new JsSIP.UA(configuration);
 var callSession;
 
+//server state cb
 myPhone.on('connected', function(e){ 
   infoLb.innerText = "服务器连接";
   console.log('connected');
 });
 myPhone.on('disconnected', function(e){ 
-  infoLb.innerText = "服务器中断";
+  infoLb.innerText = "服务器中断:"+e.code;
+  callBtn.disabled = true;
   console.log('disconnected');
 });
 
+//register state cb
+myPhone.on('registered', function(e){ 
+  infoLb.innerText = "注册在线";
+  callBtn.disabled = false;
+  console.log('registered', e);
+});
+myPhone.on('unregistered', function(e){ 
+  infoLb.innerText = "注册离线";
+  callBtn.disabled = true;
+  console.log('unregistered', e);
+});
+myPhone.on('registrationFailed', function(e){ 
+  infoLb.innerText = "注册失败:"+e.cause;
+  callBtn.disabled = true;
+  console.log('registrationFailed', e);
+});
+
+//call process cb
 myPhone.on('newRTCSession', function(e){ 
-  console.log('newRTCSession');
-  var clearCall = function(){
-    console.log("call clear");
+  var callReq = e.request;
+
+  var clearCall = function(e){
+    console.log("call clear:"+e.cause);
+    vdiv.style.display = "none";
+    infoLb.innerText = "挂断"+e.cause;
     callSession = null;
+    callBtn.disabled = false;
+    hangBtn.disabled = true;
   };
 
-  if(callSession){
+  if(callSession != undefined){
     callSession.termiate();  
   }
   console.log('new session:', e.session);
@@ -78,73 +96,87 @@ myPhone.on('newRTCSession', function(e){
   if(callSession.direction == 'outgoing'){
     console.log('dial out');
   }else if(callSession.direction == 'incoming'){
-    console.log('call in, auto answer');
-    infoLb.innerText = "来电呼叫中";
+    console.log('call in', e.request.from);
+    infoLb.innerText = "("+callReq.from.display_name+")"+callReq.from._uri._user+"来电";
+    callBtn.disabled = false;
+    hangBtn.disabled = false;
   }
 });
 
-myPhone.on('newMessage', function(e){ 
-  console.log('newMessage', e);
-});
-myPhone.on('registered', function(e){ 
-  infoLb.innerText = "注册在线";
-  console.log('registered', e);
-});
-myPhone.on('unregistered', function(e){ 
-  infoLb.innerText = "注册离线";
-  console.log('unregistered');
-});
-myPhone.on('registrationFailed', function(e){ 
-  infoLb.innerText = "注册失败";
-  console.log('registrationFailed');
-});
-
+//start sip ua
 myPhone.start();
 
-var eventHandlers = {
-  'progress':   function(data){ 
-    infoLb.innerText = "呼叫中...";
-    console.log("calling");
-   },
-  'failed':     function(data){ 
-    infoLb.innerText = "呼叫失败";
-    console.log("call failed");
-   },
-  'confirmed':  function(data){ 
-    infoLb.innerText = "呼叫接通";
-    console.log("call confirmed", data);
-   },
-  'ended':      function(data){ 
-    infoLb.innerText = "呼叫结束";
-    console.log("call ended", data);
-   }
-};
-var options = {
-  'eventHandlers': eventHandlers,
-  'mediaConstraints': {'audio': true, 'video': true},
+//call process func and cb
+function add_view(){
+  callSession.connection.addEventListener('track', ({ track, streams: [stream] }) => {
+    console.log('new track', track.kind);
+
+    if(track.kind == 'audio'){
+      infoLb.innerText += " 音频";
+    }
+    if(track.kind == 'video'){
+      console.log("add new track stream:", stream);
+      infoLb.innerText += "+视频";
+      views.remoteView.srcObject = stream;
+      views.selfView.srcObject = callSession.connection.getLocalStreams()[0];
+    }
+  });
+
+  callSession.connection.addEventListener('addstream', function(e){
+    console.log("add stream:", e.stream);
+    views.remoteView.srcObject = e.stream;
+    views.selfView.srcObject = callSession.connection.getLocalStreams()[0];
+  });
+}
+
+var callOptions = {
+  'eventHandlers': {
+    'progress':   function(data){ 
+      infoLb.innerText = "振铃中";
+      hangBtn.disabled = false;
+      console.log("ringing", data);
+    },
+    'failed':     function(data){ 
+      infoLb.innerText = "呼叫失败:"+data.cause;
+      console.log("call failed", data);
+    },
+    'accepted':  function(data){ 
+      infoLb.innerText = "呼叫接通"; 
+      console.log("call accepted", data);
+    },
+    'ended':      function(data){ 
+      infoLb.innerText = "呼叫结束";
+      callBtn.disabled = false;
+      hangBtn.disabled = true;
+      console.log("call ended", data);
+    }
+  },
+  'mediaConstraints': {'audio': true, 'video': false},
   'pcConfig': {
     'iceServers': [{urls: 'stun:stun.l.google.com:19302'}]
   },
   sessionTimersExpires: 3600  //过短也会呼叫失败
 };
 
-const callNum = document.getElementById("callee");
-const callBtn = document.getElementById('call');
-const hangBtn = document.getElementById('hangup');
-const infoLb = document.getElementById('status');
-
+//ui click cb
 callBtn.addEventListener('click', function(){
-  if(callSession && callSession.direction == 'incoming'){
+  vdiv.style.display = vCallCheck.checked?"flex":"none";  
+
+  if(callSession && callSession.direction == 'incoming'){    
     callSession.answer({
-      'mediaConstraints': {'audio': true, 'video': true},
+      'mediaConstraints': {'audio': true, 'video': vCallCheck.checked},
       'pcConfig': {
         'iceServers': [{urls: 'stun:stun.l.google.com:19302'}]
       }
     });
+    infoLb.innerText = "应答接通";
   }else{
     callee = callNum.value;
-    callSession =  myPhone.call('sip:'+callee+'@'+server.domain, options);
+    console.log(callOptions);
+    callSession =  myPhone.call('sip:'+callee+'@'+server.domain, callOptions);
     console.log('dial out:', callee);
+    infoLb.innerText = "呼叫发出";
+    callBtn.disabled = true;
     add_view();
   }
 });
@@ -152,6 +184,11 @@ callBtn.addEventListener('click', function(){
 hangBtn.addEventListener('click', function(){
   if(callSession){
     callSession.terminate();
-    infoLb.innerText = "挂断";
+    infoLb.innerText = "主动挂断";
   }
+})
+
+vCallCheck.addEventListener('change', function(e){
+  console.log(e, vCallCheck.checked);
+  callOptions.mediaConstraints.video = vCallCheck.checked;
 })
