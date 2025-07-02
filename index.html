@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-
+<html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" href="./mbweb.css" />
-  <script src="./jssip-3.10.0.js"></script>
+  <script src="./jssip-3.10.0.min.js"></script>
   <title>MBWebPhone demo</title>
 </head>
 
@@ -16,7 +16,7 @@
   </div>
   <div class="content">
     <div class="user">
-      <div class="video" id="vdiv" style="display:none;">
+      <div class="video" id="vdiv">
         <video id="remote-video" width="100%" autoplay visible>
           <p>Your browser doesn't support HTML5 video.</p>
         </video>
@@ -28,13 +28,18 @@
       </div>
       
       <div>
-        <span class="content" id="status">ready</span>
+        <span class="content" id="status">等待注册</span>
       </div>
 
       <div>
-        <input type="checkbox" id="vCall">视频通话</input>
+        用户名：<input type="text" value="1000" id="uname"></input>
+        密码：<input type="password" value="mbstudio" id="upwd"></input>
+        <button id="reg">注册</button>        
+      </div>
+      <div>
         <input type="text" value="1002" id="callee"></input>
-        <button id="call" disabled>呼出/应答</button>
+        <button id="call" disabled>呼出/应答</button>        
+        <input type="checkbox" id="vCall" checked>视频通话</input>
         <button id="hangup" disabled>挂断/取消</button>
       </div>
     </div>    
