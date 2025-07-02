@@ -104,6 +104,7 @@ function uaStart(){
     console.log('new session:', e.session);
     callSession = e.session;
 
+    //fix call,answer too slow problem
     callSession.on("icecandidate", function (e) {
       if ( typeof e.candidate === "object" &&         
           typeof e.candidate.type === "string" && 
