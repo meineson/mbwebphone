@@ -51,6 +51,7 @@ function uaStart(){
     authorization_user: user.authName,
     password : user.authPwd,
     register_expires: user.regExpires,
+    connection_recovery_max_interval: 10,
     user_agent: 'MBWebPhone 1.0'
   };
   //https://jssip.net/documentation/api/ua_configuration_parameters/#parameter_authorization_user
@@ -71,7 +72,7 @@ function uaStart(){
 
   //register state cb
   myPhone.on('registered', function(e){ 
-    infoLb.innerText = "注册在线";
+    infoLb.innerText = server.domain+"注册在线";
     callBtn.disabled = false;
     regBtn.disabled = true;
     console.log('registered', e);
@@ -148,6 +149,7 @@ function uaStart(){
 
   //start sip ua
   myPhone.start();  
+  infoLb.innerText = server.domain+"注册中..";
 }
 
 //call process func and cb
@@ -298,3 +300,22 @@ vCallCheck.addEventListener('change', function(e){
     answerOptions.mediaConstraints.video = false;
   }
 });
+
+onbeforeunload = (e) => {
+  if(callSession){
+    callSession.terminate();
+
+    // // 取消事件的默认行为
+    // e.preventDefault();
+    // // Chrome 需要 returnValue 被设置
+    // e.returnValue = '关闭';
+ 
+    // // 显示确认对话框
+    // return '你确定要离开吗？';
+  }
+
+  myPhone.unregister();
+  myPhone.stop();
+
+
+};
