@@ -1,7 +1,7 @@
 const server = {
   domain: '172.21.2.210',
-  wsServers: 'wss://172.21.2.210:7443',
-  // wsServers: 'ws://172.21.2.210:5066',  //only chrome://flags#unsafely-treat-insecure-origin-as-secure=true
+  wsServers: 'wss://172.21.2.210:7443', //wss for https://, http://
+  // wsServers: 'ws://172.21.2.210:5066',  //ws for http://, only localhost work, or set chrome://flags#unsafely-treat-insecure-origin-as-secure=http://ip:port
   stunServer: 'stun:172.21.2.210:3478'
 };
 
@@ -19,7 +19,7 @@ const views = {
   'remoteView': document.getElementById('remote-video')
 };
 
-const vdiv = document.getElementById('vdiv');
+const vDiv = document.getElementById('vdiv');
 const vCallCheck = document.getElementById('vCall');
 const calleeInput = document.getElementById("callee");
 const unameInput = document.getElementById("uname");
@@ -39,6 +39,17 @@ const videoConstraints = {
   height: { ideal: 720 },
   frameRate: { ideal: 30 },
   // facingMode: { exact: "user" }
+};
+
+var clearCall = function(e){
+  views.selfView.srcObject?.getTracks().forEach(track => track.stop());
+  views.remoteView.srcObject?.getTracks().forEach(track => track.stop());
+
+  console.log("call clear:"+e.cause);
+  infoLb.innerText = "挂断"+e.cause;
+  callSession = null;
+  callBtn.disabled = false;
+  hangBtn.disabled = true;
 };
 
 function uaStart(){
@@ -93,13 +104,6 @@ function uaStart(){
   //call process cb
   myPhone.on('newRTCSession', function(e){ 
     var callReq = e.request;
-    var clearCall = function(e){
-      console.log("call clear:"+e.cause);
-      infoLb.innerText = "挂断"+e.cause;
-      callSession = null;
-      callBtn.disabled = false;
-      hangBtn.disabled = true;
-    };
 
     callSession?.termiate();  
     console.log('new session:', e.session);
@@ -119,7 +123,8 @@ function uaStart(){
     if(callSession.direction == 'outgoing'){
       var peerConnection = callSession.connection;
       console.log('dial out');
-    
+      hangBtn.disabled = false;
+
       showRemoteStreams(peerConnection);
     }else if(callSession.direction == 'incoming'){
       console.log('call in', e.request.from);
@@ -193,8 +198,6 @@ var callOptions = {
       console.log("get usermedia failed", data);
     },
     'ended':      function(data){ 
-      views.selfView.srcObject?.getTracks().forEach(track => track.stop());
-      views.remoteView.srcObject?.getTracks().forEach(track => track.stop());
       infoLb.innerText = "呼叫结束";
       callBtn.disabled = false;
       hangBtn.disabled = true;
@@ -254,10 +257,12 @@ function getLocalStream(setStream){
 
 //ui click cb
 regBtn.addEventListener('click', function(){
+  myPhone?.stop();
+
   user.disName = unameInput.value;
   user.name = unameInput.value;
   user.authName = unameInput.value;
-  user.password = upwdInput.value;
+  user.authPwd = upwdInput.value;
 
   uaStart();
   regBtn.disabled = true;
@@ -301,21 +306,10 @@ vCallCheck.addEventListener('change', function(e){
   }
 });
 
-onbeforeunload = (e) => {
+window.addEventListener("beforeunload", function (e) {
   if(callSession){
     callSession.terminate();
-
-    // // 取消事件的默认行为
-    // e.preventDefault();
-    // // Chrome 需要 returnValue 被设置
-    // e.returnValue = '关闭';
- 
-    // // 显示确认对话框
-    // return '你确定要离开吗？';
-  }
-
-  myPhone.unregister();
-  myPhone.stop();
-
-
-};
+  }  
+  myPhone?.unregister();
+  myPhone?.stop();
+});
