@@ -1,8 +1,8 @@
 const server = {
   domain: '172.21.2.210',
   sipPort: 8060,
-  wsServers: 'wss://172.21.2.210:7443', //wss for https://, http://
-  // wsServers: 'ws://172.21.2.210:5066',  //ws for http://, only localhost work, or set chrome://flags#unsafely-treat-insecure-origin-as-secure=http://ip:port
+  // wsServers: 'wss://172.21.2.210:7443', //wss for https://, http://
+  wsServers: 'ws://172.21.2.210:5066',  //ws for http://, only localhost work, or set chrome://flags#unsafely-treat-insecure-origin-as-secure=http://ip:port
   stunServer: 'stun:172.21.2.210:3478'
 };
 

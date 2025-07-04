@@ -39,3 +39,14 @@ package mbwebphone as an Windows/Linux/MacOS app/exe:
 #npm install nwjs-builder-phoenix --save-dev
 #npm run dev
 #npm run dist
+
+//windows
+...
+
+//macos dmg
+#hdiutil create -volname "MBWebPhone" \
+  -srcfolder "./out/MBWebPhone APP 1.0.1 mac x64/MBWebPhone.app" \
+  -ov -format UDZO "./out/MBWebPhone.dmg"
+
+//linux
+...
