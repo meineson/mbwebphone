@@ -4,7 +4,7 @@ using freeswitch docker:
 ```
 #docker pull safarov/freeswitch
 #docker run -d --name fs -v  ~/fscfg:/etc/freeswitch --net=host safarov/freeswitch
-#docker run -d --name ice --network=host coturn/coturn
+~~#docker run -d --name ice --network=host coturn/coturn~~  
 
 #cd ~/fscfg/
 #nano vars.xml
