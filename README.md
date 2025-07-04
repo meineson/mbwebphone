@@ -35,14 +35,26 @@ using freeswitch docker:
 fs>sofia global siptrace on   #sip message debug
 ```
 
-package mbwebphone as an Windows/Linux/MacOS app/exe:
+__WEB release__
+
+#tar zcvf ./out/mbwebphone.tgz index.html jssip-3.10.0.min.js mbphone.js mbweb.css miniweb.js
+send mbwebphone.tgz to users:
+```
+#tar zxvf mbwebphone.tgz
+#node miniweb.js
+```
+visit http://localhost:3000 in chrome,edge,safari.
+
+__Windows/Linux/MacOS release__
+
+package mbwebphone as an Windows/Linux/MacOS app|exe:
 ```
 #npm install nwjs-builder-phoenix --save-dev
 #npm run dev
 #npm run dist
 
 //windows
-...
+run ./out/MBWebPhone APP 1.0.1 win [x64|x86]/nw.exe
 
 //macos dmg
 #hdiutil create -volname "MBWebPhone" \
@@ -50,5 +62,5 @@ package mbwebphone as an Windows/Linux/MacOS app/exe:
   -ov -format UDZO "./out/MBWebPhone.dmg"
 
 //linux
-...
+run ./out/MBWebPhone APP 1.0.1 linux [x64|x86]/MBWebPhone APP
 ```
