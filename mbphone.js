@@ -25,12 +25,12 @@ const vCallCheck = document.getElementById('vCall');
 const calleeInput = document.getElementById("callee");
 const unameInput = document.getElementById("uname");
 const upwdInput = document.getElementById("upwd");
+const srvInput = document.getElementById("srvaddr");
 const regBtn = document.getElementById('reg');
 const callBtn = document.getElementById('call');
 const hangBtn = document.getElementById('hangup');
 const infoLb = document.getElementById('status');
 
-var socket = new JsSIP.WebSocketInterface(server.wsServers);
 var myPhone = null;
 var callSession = null;
 var remoteStream  = null;
@@ -56,6 +56,8 @@ var clearCall = function(e){
 function uaStart(){
   var uri  = new JsSIP.URI('sip', user.name, server.domain, server.sipPort);
   uri.setParam('transport', server.wsServers.split(":")[0]);  //get ws or wss
+  
+  var socket = new JsSIP.WebSocketInterface(server.wsServers);
 
   var configuration = {
     sockets  : [ socket ],
@@ -263,10 +265,15 @@ function getLocalStream(setStream){
 regBtn.addEventListener('click', function(){
   myPhone?.stop();
 
+  server.domain = srvInput.value;
+  server.wsServers = "ws://"+server.domain+":5066";
+
   user.disName = unameInput.value;
   user.name = unameInput.value;
   user.authName = unameInput.value;
   user.authPwd = upwdInput.value;
+
+  console.log(server, user);
 
   uaStart();
   // regBtn.disabled = true;
