@@ -172,9 +172,9 @@ function showRemoteStreams(callConn) {
 
 var answerOptions = {
   'mediaConstraints': {'audio': true, 'video': videoConstraints},//video flag set by checkbox latter
-  'pcConfig': {
-    'iceServers': [{urls: server.stunServer}]
-  }
+  // 'pcConfig': {
+  //   'iceServers': [{urls: server.stunServer}]
+  // }
 };
 
 var callOptions = {
@@ -211,9 +211,9 @@ var callOptions = {
     }
   },
   'mediaConstraints': {'audio': true, 'video': videoConstraints},  //video flag set by checkbox latter
-  'pcConfig': {
-      'iceServers': [{urls: server.stunServer}]
-  },
+  // 'pcConfig': {
+  //     'iceServers': [{urls: server.stunServer}]
+  // },
   sessionTimersExpires: 120  //freeswitch过短会呼叫失败
 };
 

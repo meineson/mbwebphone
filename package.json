@@ -37,12 +37,12 @@
     "win": {
       "productName": "MBWebPhone",
       "companyName": "MBSTUDIO",
-      "copyright": "copyright",
+      "copyright": "copyright (C) mbstudio.cn",
       "icon": "logo.icns"
     },
     "mac": {
       "displayName": "MBWebPhone",
-      "copyright": "copyright",
+      "copyright": "copyright (C) mbstudio.cn",
       "icon": "logo.icns",
       "plistStrings": {
         "CFBundleIdentifier": "mbwebphone.cn.mbstudio",
