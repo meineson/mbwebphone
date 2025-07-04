@@ -15,7 +15,7 @@
   },
   "scripts": {
     "dev": "/Users/mac/nwjs/nwjs.app/Contents/MacOS/nwjs .",
-    "dist": "build --tasks win-x86,win-x64,linux-x86,linux-x64,mac-x64 --concurrent .",    
+    "dist": "tar zcvf ./out/mbwebphone.tgz index.html jssip-3.10.0.min.js mbphone.js mbweb.css miniweb.js && build --tasks win-x86,win-x64,linux-x86,linux-x64,mac-x64 --concurrent .",    
     "start": "run --x64 ."
   },
   "author": "meineson",
