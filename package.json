@@ -37,8 +37,7 @@
     "win": {
       "productName": "MBWebPhone",
       "companyName": "MBSTUDIO",
-      "copyright": "copyright (C) mbstudio.cn",
-      "icon": "logo.icns"
+      "copyright": "copyright (C) mbstudio.cn"      
     },
     "mac": {
       "displayName": "MBWebPhone",
