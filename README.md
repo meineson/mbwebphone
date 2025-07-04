@@ -37,7 +37,8 @@ fs>sofia global siptrace on   #sip message debug
 
 __WEB release__
 
-#tar zcvf ./out/mbwebphone.tgz index.html jssip-3.10.0.min.js mbphone.js mbweb.css miniweb.js
+`#tar zcvf ./out/mbwebphone.tgz index.html jssip-3.10.0.min.js mbphone.js mbweb.css miniweb.js`
+
 send mbwebphone.tgz to users:
 ```
 #tar zxvf mbwebphone.tgz
