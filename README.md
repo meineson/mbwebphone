@@ -34,3 +34,8 @@ using freeswitch docker:
 #docker exec -ti fs fs_cli
 fs>sofia global siptrace on   #sip message debug
 ```
+
+package mbwebphone as an Windows/Linux/MacOS app/exe:
+#npm install nwjs-builder-phoenix --save-dev
+#npm run dev
+#npm run dist

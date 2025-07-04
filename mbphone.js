@@ -1,5 +1,6 @@
 const server = {
   domain: '172.21.2.210',
+  sipPort: 8060,
   wsServers: 'wss://172.21.2.210:7443', //wss for https://, http://
   // wsServers: 'ws://172.21.2.210:5066',  //ws for http://, only localhost work, or set chrome://flags#unsafely-treat-insecure-origin-as-secure=http://ip:port
   stunServer: 'stun:172.21.2.210:3478'
@@ -10,7 +11,7 @@ const user = {
     disName: '1000',
     name: '1000',
     authName: '1000',
-    authPwd: 'mbstudio',
+    authPwd: '1000',
     regExpires: 180
 }
 
@@ -53,12 +54,15 @@ var clearCall = function(e){
 };
 
 function uaStart(){
+  var uri  = new JsSIP.URI('sip', user.name, server.domain, server.sipPort);
+  uri.setParam('transport', server.wsServers.split(":")[0]);  //get ws or wss
+
   var configuration = {
     sockets  : [ socket ],
     display_name: user.disName,
-    uri      : 'sip:'+user.name+'@'+server.domain,
+    uri: uri.toAor(),
     realm: server.domain,
-    // contact_uri: 'sip:'+user.name+'@'+server.domain,
+    contact_uri: uri.toString(),  //fix freeswtich call bugs
     authorization_user: user.authName,
     password : user.authPwd,
     register_expires: user.regExpires,
@@ -85,7 +89,7 @@ function uaStart(){
   myPhone.on('registered', function(e){ 
     infoLb.innerText = server.domain+"注册在线";
     callBtn.disabled = false;
-    regBtn.disabled = true;
+    // regBtn.disabled = true;
     console.log('registered', e);
   });
   myPhone.on('unregistered', function(e){ 
@@ -168,9 +172,9 @@ function showRemoteStreams(callConn) {
 
 var answerOptions = {
   'mediaConstraints': {'audio': true, 'video': videoConstraints},//video flag set by checkbox latter
-  // 'pcConfig': {
-  //   'iceServers': [{urls: server.stunServer}]
-  // }
+  'pcConfig': {
+    'iceServers': [{urls: server.stunServer}]
+  }
 };
 
 var callOptions = {
@@ -207,9 +211,9 @@ var callOptions = {
     }
   },
   'mediaConstraints': {'audio': true, 'video': videoConstraints},  //video flag set by checkbox latter
-  // 'pcConfig': {
-  //     'iceServers': [{urls: server.stunServer}]
-  // },
+  'pcConfig': {
+      'iceServers': [{urls: server.stunServer}]
+  },
   sessionTimersExpires: 120  //freeswitch过短会呼叫失败
 };
 
@@ -265,7 +269,7 @@ regBtn.addEventListener('click', function(){
   user.authPwd = upwdInput.value;
 
   uaStart();
-  regBtn.disabled = true;
+  // regBtn.disabled = true;
 });
 
 callBtn.addEventListener('click', function(){
@@ -281,7 +285,8 @@ callBtn.addEventListener('click', function(){
       callOptions.mediaStream = localStream;  //U can choose different device to callout
       console.log(callOptions);
 
-      callSession =  myPhone.call('sip:'+callee+'@'+server.domain, callOptions);
+      var uri  = new JsSIP.URI('sip', callee, server.domain, server.sipPort);
+      callSession =  myPhone.call(uri.toAor(), callOptions);
       console.log('dial out:', callee);
       infoLb.innerText = "呼叫中...";
       callBtn.disabled = true;

@@ -1,0 +1,51 @@
+{
+  "name": "MBWebPhone APP",
+  "version": "1.0.1",
+  "main": "index.html",
+  "chromium-args": "--ignore-certificate-errors",
+  "no-edit-menu": true,
+  "type": "commonjs",
+  "devDependencies": {
+    "nwjs-builder-phoenix": "^1.15.0"
+  },
+  "window": {
+    "icon": "logo.icns"
+  },
+  "scripts": {
+    "dev": "/Users/mac/nwjs/nwjs.app/Contents/MacOS/nwjs .",
+    "dist": "build --tasks win-x86,win-x64,linx-x86,linux-x64,mac-x64 .",    
+    "start": "run --x64 ."
+  },
+  "author": "meineson",
+  "license": "MIT",
+  "build": {
+    "appId": "mbwebphone.cn.mbstudio",
+    "nwVersion": "0.101.0",
+    "ffmpegIntegration": true,
+    "packed": true,
+    "output": "./out",
+    "files": [
+      "**/*"
+    ],
+    "targets": [
+      "zip",
+      "nsis7z"
+    ],
+    "outputPattern": "${NAME} ${VERSION} ${PLATFORM} ${ARCH}",
+    "win": {
+      "productName": "MBWebPhone",
+      "companyName": "MBSTUDIO",
+      "copyright": "copyright",
+      "icon": "logo.icns"
+    },
+    "mac": {
+      "displayName": "MBWebPhone",
+      "copyright": "copyright",
+      "icon": "logo.icns",
+      "plistStrings": {
+        "CFBundleIdentifier": "mbwebphone.cn.mbstudio",
+        "CFBundleDocumentTypes": []
+      }
+    }
+  }
+}
