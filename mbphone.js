@@ -1,17 +1,17 @@
 const server = {
-  domain: '172.21.2.210',
+  domain: '',   //172.21.2.210
   sipPort: 8060,
   // wsServers: 'wss://172.21.2.210:7443', //wss for https://, http://
-  wsServers: 'ws://172.21.2.210:5066',  //ws for http://, only localhost work, or set chrome://flags#unsafely-treat-insecure-origin-as-secure=http://ip:port
-  // stunServer: 'stun:172.21.2.210:3478'
+  wsServers: '',  //ws://172.21.2.210:5066 ws for http://, only localhost work, or set chrome://flags#unsafely-treat-insecure-origin-as-secure=http://ip:port
+  // stunServer: '' //stun:172.21.2.210:3478
 };
 
 //default user
 const user = {
-    disName: '1000',
-    name: '1000',
-    authName: '1000',
-    authPwd: '1000',
+    disName: '',
+    name: '',
+    authName: '',
+    authPwd: '',
     regExpires: 180
 }
 
@@ -26,6 +26,7 @@ const calleeInput = document.getElementById("callee");
 const unameInput = document.getElementById("uname");
 const upwdInput = document.getElementById("upwd");
 const srvInput = document.getElementById("srvaddr");
+const wsInput = document.getElementById("wsaddr");
 const regBtn = document.getElementById('reg');
 const callBtn = document.getElementById('call');
 const hangBtn = document.getElementById('hangup');
@@ -271,12 +272,18 @@ function getLocalStream(setStream){
 
 //ui click cb
 regBtn.addEventListener('click', function(){
-  server.domain = srvInput.value;
-  server.wsServers = "ws://"+server.domain+":5066";
-  user.disName = unameInput.value;
-  user.name = unameInput.value;
-  user.authName = unameInput.value;
-  user.authPwd = upwdInput.value;
+  server.domain = srvInput.value.trim();
+  if(wsInput.value.trim() == ""){
+    server.wsServers = "ws://"+server.domain+":5066";
+    wsInput.value = server.wsServers;
+  }else{
+    server.wsServers = wsInput.value;
+  }
+  
+  user.disName = unameInput.value.trim();
+  user.name = unameInput.value.trim();
+  user.authName = unameInput.value.trim();
+  user.authPwd = upwdInput.value.trim();
 
   console.log(server, user);
 

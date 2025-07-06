@@ -24,16 +24,17 @@
       </div>
     
       <div>
-        服务器：<input type="text" value="172.21.2.210" id="srvaddr"></input>
-        用户名：<input type="text" value="1000" id="uname"></input>
-        密码：<input type="password" value="1000" id="upwd"></input>
-        <button id="reg">注册</button>        
+        Server:<input type="text" value="172.21.2.210" size="15" id="srvaddr"></input>
+        WS/WSS:<input type="text" value="" id="wsaddr"></input>(*选填）</br>
+        用户名:<input type="text" value="1000" size="8" id="uname"></input>
+        密码:<input type="password" value="1000" size="8" id="upwd"></input>
+        <button id="reg">注册</button></br>        
+        <span id="status" style="color:#ffffff;background: #000;">等待注册</span>
       </div>
       <div>
-        <span class="content" id="status">等待注册</span>
-        <input type="text" value="1002" id="callee"></input>
-        <button id="call" disabled>呼出/应答</button>        
+        <input type="text" value="1002" size="10" id="callee"></input>
         <input type="checkbox" id="vCall" checked>视频通话</input>
+        <button id="call" disabled>呼出/应答</button>        
         <button id="hangup" disabled>挂断/取消</button>
       </div>
     </div>    
