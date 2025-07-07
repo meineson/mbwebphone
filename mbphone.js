@@ -327,12 +327,15 @@ regBtn.addEventListener('click', function(){
 });
 
 callBtn.addEventListener('click', function(){
-  if(callSession && callSession.direction == 'incoming'){        
-    callSession.answer(answerOptions);  //using default device to answer
-    console.log("answer option:", answerOptions);
+  if(callSession && callSession.direction == 'incoming'){      
+    getLocalStream(function(localStream){
+      answerOptions.mediaStream = localStream;
+      callSession.answer(answerOptions);  //using default device to answer
+      console.log("answer option:", answerOptions);
 
-    infoLb.innerText = "应答接通";    
-    callBtn.disabled = true;
+      infoLb.innerText = "应答接通";    
+      callBtn.disabled = true;
+    });    
   }else{
     callee = calleeInput.value.trim();
     user.lastCallee = callee;
@@ -346,7 +349,6 @@ callBtn.addEventListener('click', function(){
       callSession =  myPhone.call(uri.toAor(), callOptions);
       console.log('dial out:', callee);
       infoLb.innerText = "呼叫中...";
-      remoteView.style.backgroundImage = "url('connectiong.png')";
       callBtn.disabled = true;
     });
   }
