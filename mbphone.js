@@ -40,6 +40,7 @@ var myPhone = null;
 var doReReg = false;
 var callSession = null;
 var remoteStream  = null;
+var callTimer = null;
 
 const videoConstraints = {
   width: { ideal: 1280 },
@@ -75,6 +76,10 @@ var clearCall = function(e){
   callSession = null;
   callBtn.disabled = false;
   hangBtn.disabled = true;
+  
+  if(callTimer){
+    clearInterval(callTimer);
+  }
 };
 
 function uaStart(){
@@ -204,6 +209,16 @@ function showRemoteStreams(callConn) {
   }
 }
 
+function timeFromNow() {
+  const now = new Date();
+  const start = new Date(callSession.start_time);
+  const diff = (now - start)/1000;
+  
+  return Math.floor(diff / 3600).toString().padStart(2, '0') + ":" +
+          Math.floor((diff % 3600) / 60).toString().padStart(2, '0') + ":" +
+          Math.floor(diff % 60).toString().padStart(2, '0');
+}
+
 var answerOptions = {
   'mediaConstraints': {'audio': true, 'video': videoConstraints},//video flag set by checkbox latter
   // 'pcConfig': {
@@ -229,6 +244,10 @@ var callOptions = {
       infoLb.innerText = "呼叫接通"; 
       callBtn.disabled = true;
       console.log("call accepted", data);
+
+      callTimer = setInterval(() => {
+        infoLb.innerText = "通话时长 "+ timeFromNow();
+      }, 1000);
     },
     'confirmed': function(data){
       console.log("call confirmed", data);
@@ -252,7 +271,7 @@ var callOptions = {
   sessionTimersExpires: 120  //freeswitch过短会呼叫失败
 };
 
-function getLocalStream(setStream){
+function getLocalStream(setStream, failedCb){
   if(!navigator.mediaDevices){
     alert("浏览器无法打开音视频设备，请以https://或file://方式访问。");
     infoLb.innerText = '无法打开设备，无法呼叫';
@@ -274,6 +293,7 @@ function getLocalStream(setStream){
     setStream(stream);
   })
   .catch(error => {
+    failedCb();
     infoLb.innerText = " 本地通话设备异常";
     console.error('媒体访问失败:', error.name); 
   });  
@@ -335,6 +355,12 @@ callBtn.addEventListener('click', function(){
 
       infoLb.innerText = "应答接通";    
       callBtn.disabled = true;
+
+      callTimer = setInterval(() => {
+        infoLb.innerText = "通话时长 "+ timeFromNow();
+      }, 1000);
+    }, function(){
+      callSession.terminate();
     });    
   }else{
     callee = calleeInput.value.trim();
@@ -350,6 +376,8 @@ callBtn.addEventListener('click', function(){
       console.log('dial out:', callee);
       infoLb.innerText = "呼叫中...";
       callBtn.disabled = true;
+    }, function(){
+      callSession.terminate();
     });
   }
 });

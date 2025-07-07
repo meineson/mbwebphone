@@ -17,6 +17,7 @@ span {
   color: yellow;
   display: block;
   text-align: center;
+  width: 250px;
 }
 
 .video {
