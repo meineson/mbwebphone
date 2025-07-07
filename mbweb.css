@@ -92,6 +92,21 @@ span {
   z-index: 1;
 }
 
+.infobox {
+  display: none; /* 默认不显示 flex*/
+  position: fixed; /* 固定定位 */
+  z-index: 10; /* 位于顶层 */
+  justify-content: center;
+  align-items: center;
+  font-weight: bolder;
+  left: 0;
+  top: 0;
+  width: 100%; /* 宽度100% */
+  height: 100%; /* 高度100% */
+  overflow: auto; /* 启用滚动 */
+  background-color: rgba(0, 0, 0, 0.6); /* 背景颜色透明度 */
+}
+
 body,html {
   height: 100%;
   margin: 0;

@@ -32,6 +32,8 @@ const regBtn = document.getElementById('reg');
 const callBtn = document.getElementById('call');
 const hangBtn = document.getElementById('hangup');
 const infoLb = document.getElementById('status');
+const alertMsg = document.getElementById('alertmsg');
+const infoBox = document.getElementById('infobox');
 const regDiv = document.getElementById('regdiv');
 
 var myPhone = null;
@@ -162,8 +164,7 @@ function uaStart(){
 
       showRemoteStreams(peerConnection);
     }else if(callSession.direction == 'incoming'){
-      console.log('call in', e.request.from);
-
+      console.log('call in', e.request.from);           
       callSession.on('peerconnection', function(data){ 
         console.log('peerconnection:', data.peerconnection);
         data.peerconnection.onconnectionstatechange = (ev) => {
@@ -181,7 +182,9 @@ function uaStart(){
         showRemoteStreams(data.peerconnection);
       });
 
-      infoLb.innerText = "("+callReq.from.display_name+")"+callReq.from._uri._user+"来电";
+      alertMsg.innerText = infoLb.innerText = 
+        "("+callReq.from.display_name+") "+callReq.from._uri._user+" 来电";
+      infoBox.style.display = "flex";
       callBtn.disabled = false;
       hangBtn.disabled = false;
     }
@@ -328,6 +331,7 @@ callBtn.addEventListener('click', function(){
     console.log("answer option:", answerOptions);
 
     infoLb.innerText = "应答接通";    
+    callBtn.disabled = true;
   }else{
     callee = calleeInput.value.trim();
     user.lastCallee = callee;
@@ -365,6 +369,12 @@ vCallCheck.addEventListener('change', function(e){
   }
 });
 
+document.addEventListener('mousemove', function(e){
+  setTimeout(() => {
+    infoBox.style.display = "none";  
+  }, 500);
+})
+
 window.addEventListener("load", function(e){
   readConfig();
 
@@ -377,5 +387,7 @@ window.addEventListener("load", function(e){
 
 window.addEventListener("beforeunload", function (e) {
   saveConfig();
+  myPhone?.unregister();
+  callSession?.terminate();
   myPhone?.stop();
 });

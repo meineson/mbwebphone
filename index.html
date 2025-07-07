@@ -12,7 +12,7 @@
 <body>
   <div class="content">
     <div class="video" id="vdiv">
-      <video id="remote-video" poster="connecting.png" width="100%" autoplay visible>
+      <video id="remote-video" width="100%" autoplay visible>
         <p>Your browser doesn't support HTML5 video.</p>
       </video>
       <div class="video-local">
@@ -36,6 +36,10 @@
       <button id="call" disabled>🟢 呼出/应答</button>        
       <button id="hangup" disabled>🚫 挂断/取消</button>
     </div> 
+    <div class="infobox" id="infobox">
+      <img src="connecting.png" width="50"/>
+      <span id="alertmsg"></span>
+    </div>
   </div>
   <script src="./mbphone.js"></script>
 </body>
