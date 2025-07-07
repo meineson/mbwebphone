@@ -12,7 +12,7 @@
 <body>
   <div class="content">
     <div class="video" id="vdiv">
-      <video id="remote-video" width="100%" autoplay visible>
+      <video id="remote-video" poster="connecting.png" width="100%" autoplay visible>
         <p>Your browser doesn't support HTML5 video.</p>
       </video>
       <div class="video-local">
@@ -20,20 +20,22 @@
           <p>Your browser doesn't support HTML5 video.</p>
         </video>
       </div>
-    </div>    
-
-    <div class="toolbar" id="toolbar">
-      SERVER：<input type="text" value="172.21.2.210" size="15" id="srvaddr"></input>
-      WS/WSS：<input type="text" value="" id="wsaddr"></input>(*选填）
-      用户名：<input type="text" value="1000" size="8" id="uname"></input>
-      密码：<input type="password" value="1000" size="8" id="upwd"></input>
+    </div> 
+    
+    <div class="regdiv" id="regdiv">
+      <input type="text" placeholder="server IP/Domain" value="" size="15" id="srvaddr"></input>
+      <input type="text" placeholder="空白自动生成 [ws|wss]://ip:port" value="" id="wsaddr"></input>
+      <input type="text" placeholder="sip号码" value="" size="8" id="uname"></input>
+      <input type="password" placeholder="sip密码" value="1000" size="8" id="upwd"></input>
       <button id="reg">🔄 注册</button>
-      被叫号码：<input type="text" value="1002" size="10" id="callee"></input>
-      <input type="checkbox" id="vCall" checked>视频通话</input>
-      <span id="status">等待注册</span>
+    </div>
+    <div class="calldiv">  
+      <span id="status">等待注册，注册在线后可发起呼叫</span>
+      <input type="text" placeholder="被叫号码" value="" size="10" id="callee"></input>
+      <input type="checkbox" id="vCall" checked>视频</input>
       <button id="call" disabled>🟢 呼出/应答</button>        
       <button id="hangup" disabled>🚫 挂断/取消</button>
-    </div>    
+    </div> 
   </div>
   <script src="./mbphone.js"></script>
 </body>

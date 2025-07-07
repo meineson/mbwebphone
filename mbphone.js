@@ -1,4 +1,4 @@
-const server = {
+var server = {
   domain: '',   //172.21.2.210
   sipPort: 8060,
   // wsServers: 'wss://172.21.2.210:7443', //wss for https://, http://
@@ -7,12 +7,13 @@ const server = {
 };
 
 //default user
-const user = {
+var user = {
     disName: '',
     name: '',
     authName: '',
     authPwd: '',
-    regExpires: 180
+    regExpires: 180,
+    lastCallee: ''
 }
 
 const views = {
@@ -31,7 +32,7 @@ const regBtn = document.getElementById('reg');
 const callBtn = document.getElementById('call');
 const hangBtn = document.getElementById('hangup');
 const infoLb = document.getElementById('status');
-const toolBar = document.getElementById('toolbar');
+const regDiv = document.getElementById('regdiv');
 
 var myPhone = null;
 var doReReg = false;
@@ -45,10 +46,27 @@ const videoConstraints = {
   // facingMode: { exact: "user" }
 };
 
+function saveConfig(){
+  localStorage.setItem('user', JSON.stringify(user));
+  localStorage.setItem('server', JSON.stringify(server)); 
+  config.log("config saved:", user, server);  
+}
+
+function readConfig(){
+  if(localStorage.getItem('user')){
+    user = JSON.parse(localStorage.getItem('user'))
+  }
+  if(localStorage.getItem('server')){
+    server = JSON.parse(localStorage.getItem('server'))
+  }
+  console.log("config readed:", user, server);  
+}
+
 var clearCall = function(e){
   views.selfView.srcObject?.getTracks().forEach(track => track.stop());
+  views.selfView.srcObject = null;
   views.remoteView.srcObject?.getTracks().forEach(track => track.stop());
-  toolBar.style.opacity = 0.7;
+  views.remoteView.srcObject = null;
 
   console.log("call clear:"+e.cause);
   infoLb.innerText = "挂断"+e.cause;
@@ -104,6 +122,7 @@ function uaStart(){
     callBtn.disabled = false;
     regBtn.disabled = false;
     console.log('registered', e);
+    regDiv.style.opacity = 0.2;
   });
   myPhone.on('unregistered', function(e){ 
     infoLb.innerText = "注册离线";
@@ -122,7 +141,6 @@ function uaStart(){
   myPhone.on('newRTCSession', function(e){ 
     var callReq = e.request;
 
-    callSession?.termiate();  
     console.log('new session:', e.session);
     callSession = e.session;
 
@@ -152,7 +170,6 @@ function uaStart(){
           switch (data.peerconnection.connectionState) {
             case "connected":
               views.selfView.srcObject = callSession.connection.getLocalStreams()[0];
-              toolBar.style.opacity = 0.2;
               console.log(callSession.connection.getLocalStreams());
               break;
 
@@ -216,7 +233,6 @@ var callOptions = {
       console.log("get usermedia failed", data);
     },
     'ended':      function(data){ 
-      toolBar.style.opacity = 0.7;
       infoLb.innerText = "呼叫结束";
       callBtn.disabled = false;
       hangBtn.disabled = true;
@@ -313,10 +329,10 @@ callBtn.addEventListener('click', function(){
 
     infoLb.innerText = "应答接通";    
   }else{
-    callee = calleeInput.value;
+    callee = calleeInput.value.trim();
+    user.lastCallee = callee;
     getLocalStream(function(localStream){
       views.selfView.srcObject = localStream; 
-      toolBar.style.opacity = 0.2;
 
       callOptions.mediaStream = localStream;  //U can choose different device to callout
       console.log(callOptions);
@@ -325,13 +341,13 @@ callBtn.addEventListener('click', function(){
       callSession =  myPhone.call(uri.toAor(), callOptions);
       console.log('dial out:', callee);
       infoLb.innerText = "呼叫中...";
+      remoteView.style.backgroundImage = "url('connectiong.png')";
       callBtn.disabled = true;
     });
   }
 });
 
 hangBtn.addEventListener('click', function(){
-  toolBar.style.opacity = 0.7;
 
   if(callSession){
     callSession.terminate();
@@ -349,6 +365,17 @@ vCallCheck.addEventListener('change', function(e){
   }
 });
 
+window.addEventListener("load", function(e){
+  readConfig();
+
+  srvInput.value = server.domain;
+  wsInput.value = server.wsServers;
+  unameInput.value = user.name;
+  upwdInput.value = user.authPwd;
+  calleeInput.value = user.lastCallee?user.lastCallee:"";
+})
+
 window.addEventListener("beforeunload", function (e) {
+  saveConfig();
   myPhone?.stop();
 });
