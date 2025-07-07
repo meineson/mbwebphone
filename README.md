@@ -57,22 +57,28 @@ package mbwebphone as an Windows/Linux/MacOS app|exe:
 
 - windows 
 
-*macos need wine to make setup exe*
+*macos build need wine to make setup exe*
+```
 ./out/MBWebPhone APP 1.0.1 win x64-Setup.exe
 ./out/MBWebPhone APP 1.0.1 win x86-Setup.exe
 or run ./out/MBWebPhone APP 1.0.1 win [x64|x86]/nw.exe
+```
 
 - macos dmg
 ![image](https://www.mbstudio.cn/images/2025-07-07-16-22-28.png)
 ./out/MBWebPhone APP 1.0.1 mac x64.zip
 or
+```
 #hdiutil create -volname "MBWebPhone" \
   -srcfolder "./out/MBWebPhone APP 1.0.1 mac x64/MBWebPhone.app" \
   -ov -format UDZO "./out/MBWebPhone.dmg"
 ./out/MBWebPhone v0.1.1.dmg  
+```
 
 -  linux
 
+```
 ./out/MBWebPhone APP 1.0.1 linux x64.zip
 ./out/MBWebPhone APP 1.0.1 linux x86.zip
 or run ./out/MBWebPhone APP 1.0.1 linux [x64|x86]/MBWebPhone APP
+```
