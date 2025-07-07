@@ -53,6 +53,7 @@ package mbwebphone as an Windows/Linux/MacOS app|exe:
 #npm install nwjs-builder-phoenix --save-dev
 #npm run dev
 #npm run dist
+```
 
 - windows 
 *macos need wine to make setup exe*
@@ -73,4 +74,3 @@ or
 ./out/MBWebPhone APP 1.0.1 linux x64.zip
 ./out/MBWebPhone APP 1.0.1 linux x86.zip
 or run ./out/MBWebPhone APP 1.0.1 linux [x64|x86]/MBWebPhone APP
-```
