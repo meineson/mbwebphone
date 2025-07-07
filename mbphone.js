@@ -31,6 +31,7 @@ const regBtn = document.getElementById('reg');
 const callBtn = document.getElementById('call');
 const hangBtn = document.getElementById('hangup');
 const infoLb = document.getElementById('status');
+const toolBar = document.getElementById('toolbar');
 
 var myPhone = null;
 var doReReg = false;
@@ -47,6 +48,7 @@ const videoConstraints = {
 var clearCall = function(e){
   views.selfView.srcObject?.getTracks().forEach(track => track.stop());
   views.remoteView.srcObject?.getTracks().forEach(track => track.stop());
+  toolBar.style.opacity = 0.7;
 
   console.log("call clear:"+e.cause);
   infoLb.innerText = "挂断"+e.cause;
@@ -150,6 +152,7 @@ function uaStart(){
           switch (data.peerconnection.connectionState) {
             case "connected":
               views.selfView.srcObject = callSession.connection.getLocalStreams()[0];
+              toolBar.style.opacity = 0.2;
               console.log(callSession.connection.getLocalStreams());
               break;
 
@@ -213,6 +216,7 @@ var callOptions = {
       console.log("get usermedia failed", data);
     },
     'ended':      function(data){ 
+      toolBar.style.opacity = 0.7;
       infoLb.innerText = "呼叫结束";
       callBtn.disabled = false;
       hangBtn.disabled = true;
@@ -307,11 +311,13 @@ callBtn.addEventListener('click', function(){
     callSession.answer(answerOptions);  //using default device to answer
     console.log("answer option:", answerOptions);
 
-    infoLb.innerText = "应答接通";
+    infoLb.innerText = "应答接通";    
   }else{
     callee = calleeInput.value;
     getLocalStream(function(localStream){
       views.selfView.srcObject = localStream; 
+      toolBar.style.opacity = 0.2;
+
       callOptions.mediaStream = localStream;  //U can choose different device to callout
       console.log(callOptions);
 
@@ -325,6 +331,8 @@ callBtn.addEventListener('click', function(){
 });
 
 hangBtn.addEventListener('click', function(){
+  toolBar.style.opacity = 0.7;
+
   if(callSession){
     callSession.terminate();
     infoLb.innerText = "主动挂断";

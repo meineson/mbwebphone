@@ -1,6 +1,6 @@
 {
-  "name": "MBWebPhone APP",
-  "version": "1.0.1",
+  "name": "mbwebphone",
+  "version": "1.0.2",
   "main": "app.html",
   "node-main": "miniweb.js",
   "node-remote": "http://localhost:3000",
@@ -11,12 +11,16 @@
     "nwjs-builder-phoenix": "^1.15.0"
   },
   "window": {
-    "icon": "logo.icns"
+    "icon": "logo.icns",
+    "width": 1066,
+    "height": 600,
+    "resizable": true
   },
   "scripts": {
     "dev": "/Users/mac/nwjs/nwjs.app/Contents/MacOS/nwjs .",
-    "dist": "tar zcvf ./out/mbwebphone.tgz index.html jssip-3.10.0.min.js mbphone.js mbweb.css miniweb.js && build --tasks win-x86,win-x64,linux-x86,linux-x64,mac-x64 --concurrent .",    
-    "start": "run --x64 ."
+    "dist": "tar zcvf ./out/mbwebphone.tgz index.html jssip-3.10.0.min.js mbphone.js mbweb.css miniweb.js && build --tasks mac-x64 --concurrent .",    
+    "start": "run --x64 .",
+    "dmg": "hdiutil create -volname 'MBWebPhone' -srcfolder './out/MBWebPhone APP 1.0.1 mac x64/MBWebPhone.app' -ov -format UDZO './out/MBWebPhone.dmg'"
   },
   "author": "meineson",
   "license": "MIT",
