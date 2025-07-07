@@ -36,7 +36,7 @@ fs>sofia global siptrace on   #sip message debug
 ```
 
 __WEB release__
-
+![image](https://www.mbstudio.cn/images/2025-07-07-16-22-36.png)
 `#tar zcvf ./out/mbwebphone.tgz index.html jssip-3.10.0.min.js mbphone.js mbweb.css miniweb.js`
 
 send mbwebphone.tgz to users:
@@ -61,6 +61,7 @@ package mbwebphone as an Windows/Linux/MacOS app|exe:
 or run ./out/MBWebPhone APP 1.0.1 win [x64|x86]/nw.exe
 
 - macos dmg
+![image](https://www.mbstudio.cn/images/2025-07-07-16-22-28.png)
 ./out/MBWebPhone APP 1.0.1 mac x64.zip
 or
 #hdiutil create -volname "MBWebPhone" \

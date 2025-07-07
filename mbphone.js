@@ -227,6 +227,7 @@ var callOptions = {
     },
     'accepted':  function(data){ 
       infoLb.innerText = "呼叫接通"; 
+      callBtn.disabled = true;
       console.log("call accepted", data);
     },
     'confirmed': function(data){
