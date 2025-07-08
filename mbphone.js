@@ -413,7 +413,7 @@ callBtn.addEventListener('click', function(){
       infoLb.innerText = "呼叫中...";
       callBtn.disabled = true;
     }, function(){
-      callSession.terminate();
+      callSession?.terminate();
     });
   }
 });
