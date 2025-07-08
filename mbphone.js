@@ -23,6 +23,7 @@ const views = {
 
 const vDiv = document.getElementById('vdiv');
 const vCallCheck = document.getElementById('vCall');
+const eMsgCheck = document.getElementById('eMsg');
 const calleeInput = document.getElementById("callee");
 const unameInput = document.getElementById("uname");
 const upwdInput = document.getElementById("upwd");
@@ -447,6 +448,11 @@ vCallCheck.addEventListener('change', function(e){
     answerOptions.mediaConstraints.video = false;
   }
 });
+
+eMsgCheck.addEventListener('change', function(e){
+  msgInput.hidden = !eMsgCheck.checked;
+  msgBox.hidden = !eMsgCheck.checked;
+})
 
 document.addEventListener('mousemove', function(e){
   setTimeout(() => {
