@@ -55,7 +55,7 @@ const videoConstraints = {
 function saveConfig(){
   localStorage.setItem('user', JSON.stringify(user));
   localStorage.setItem('server', JSON.stringify(server)); 
-  config.log("config saved:", user, server);  
+  console.log("config saved:", user, server);  
 }
 
 function readConfig(){
@@ -199,6 +199,15 @@ function uaStart(){
       infoBox.style.display = "flex";
       callBtn.disabled = false;
       hangBtn.disabled = false;
+
+      try{
+        const nwWin = nw?.Window?.get();
+        //display nwjs window
+        nwWin.show(true);
+        nwWin.requestAttention(2);
+      }catch(e){
+        // console.log(e);
+      }
     }
   });
 
@@ -468,6 +477,10 @@ window.addEventListener("load", function(e){
   unameInput.value = user.name;
   upwdInput.value = user.authPwd;
   calleeInput.value = user.lastCallee?user.lastCallee:"";
+
+  if(srvInput.value.length > 3){
+    regBtn.click();
+  }
 })
 
 window.addEventListener("beforeunload", function (e) {

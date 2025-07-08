@@ -17,7 +17,40 @@
 </head>
 
 <body>
-  
+  <script>
+    const win = nw.Window.get();
+    win.on('close', function () {
+      // this.minimize();
+      this.setShowInTaskbar(false);
+      this.hide();        
+    });
+
+    // Create a tray icon
+    var tray = new nw.Tray({ tooltip: 'MBWebPhone', icon: 'tray.png' });
+
+    // Give it a menu
+    var menu = new nw.Menu();
+    menu.append(new nw.MenuItem({ type: 'normal', label: '显示', 
+      key: 's', modifiers: 'ctrl',
+      click: function(){
+        win.show(true);
+    } }));
+    menu.append(new nw.MenuItem({ type: 'normal', label: '重启',  
+      key: 'r', modifiers: 'ctrl',
+      click: function(){
+        tray.remove();
+        win.reloadIgnoringCache();
+    } }));    
+    menu.append(new nw.MenuItem({ type: 'normal', label: '退出',  
+      key: 'q', modifiers: 'ctrl',
+      click: function(){
+        if(confirm("确认退出？")){
+          tray.remove();
+          win.close(true);
+        }
+    } }));
+    tray.menu = menu;    
+  </script>  
   <iframe src="http://localhost:3000/"  
     allow="camera; microphone" class="full-size-iframe"></iframe>  
 </body>
