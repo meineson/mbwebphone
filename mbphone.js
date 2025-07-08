@@ -35,6 +35,8 @@ const infoLb = document.getElementById('status');
 const alertMsg = document.getElementById('alertmsg');
 const infoBox = document.getElementById('infobox');
 const regDiv = document.getElementById('regdiv');
+const msgInput = document.getElementById('msg');
+const msgBox = document.getElementById('msgbox');
 
 var myPhone = null;
 var doReReg = false;
@@ -112,6 +114,7 @@ function uaStart(){
   });
   myPhone.on('disconnected', function(e){ 
     infoLb.innerText = "服务器中断:"+e.code;
+    msgInput.disabled = true;
     callBtn.disabled = true;
     regBtn.disabled = false;
     console.log('disconnected');
@@ -126,6 +129,7 @@ function uaStart(){
   //register state cb
   myPhone.on('registered', function(e){ 
     infoLb.innerText = server.domain+"注册在线";
+    msgInput.disabled = false;
     callBtn.disabled = false;
     regBtn.disabled = false;
     console.log('registered', e);
@@ -133,12 +137,14 @@ function uaStart(){
   });
   myPhone.on('unregistered', function(e){ 
     infoLb.innerText = "注册离线";
+    msgInput.disabled = true;
     callBtn.disabled = true;
     regBtn.disabled = false;
     console.log('unregistered', e);
   });
   myPhone.on('registrationFailed', function(e){ 
     infoLb.innerText = "注册失败:"+e.cause;
+    msgInput.disabled = true;
     callBtn.disabled = true;
     regBtn.disabled = false;
     console.log('registrationFailed', e);
@@ -194,6 +200,21 @@ function uaStart(){
       hangBtn.disabled = false;
     }
   });
+
+  myPhone.on('newMessage', function(e){
+    var now = new Date();
+    var msgTime = now.getHours()+":"+now.getMinutes()+":"+now.getSeconds();
+
+    console.log("new message:", e);
+    if(e.originator == 'remote'){
+      msgBox.value += e.request.from.uri.user + "(" + msgTime + "):\r\n";
+      msgBox.value += e.request.body + "\r\n\r\n";
+    }else{
+      msgBox.value += "我"+ "(" + msgTime + "):\r\n";;
+      msgBox.value += e.request.body + "\r\n\r\n";
+    }
+    msgBox.scrollTop = msgBox.scrollHeight;
+  })
 
   //start sip ua
   myPhone.start();  
@@ -382,8 +403,35 @@ callBtn.addEventListener('click', function(){
   }
 });
 
-hangBtn.addEventListener('click', function(){
+var msgOptions = {
+  'eventHandlers': {
+    'succeeded': function(data){ 
+      console.log("send msg:", data);  
+    },
+    'failed':    function(data){ 
+      console.log("send msg error:", data);
+    }
+  }
+};
 
+msgInput.addEventListener('keydown', function(event) {
+  if (event.key === "Enter") { // 检查是否按下了回车键
+    event.preventDefault(); // 阻止默认行为，例如表单提交
+
+    var callee = calleeInput.value.trim();
+    var newmsg = msgInput.value.trim();
+    user.lastCallee = callee;
+
+    if(newmsg.length > 0){
+      var uri  = new JsSIP.URI('sip', callee, server.domain, server.sipPort);
+      myPhone.sendMessage(uri.toAor(), newmsg, msgOptions);
+
+      msgInput.value = "";
+    }
+  }
+});
+
+hangBtn.addEventListener('click', function(){
   if(callSession){
     callSession.terminate();
     infoLb.innerText = "主动挂断";
