@@ -76,6 +76,7 @@ var clearCall = function(e){
 
   console.log("call clear:"+e.cause);
   infoLb.innerText = "挂断"+e.cause;
+  document.title = "MBWebPhone";
   callSession = null;
   callBtn.disabled = false;
   hangBtn.disabled = true;
@@ -115,6 +116,7 @@ function uaStart(){
   });
   myPhone.on('disconnected', function(e){ 
     infoLb.innerText = "服务器中断:"+e.code;
+    document.title = infoLb.innerText;
     msgInput.disabled = true;
     callBtn.disabled = true;
     regBtn.disabled = false;
@@ -135,9 +137,11 @@ function uaStart(){
     regBtn.disabled = false;
     console.log('registered', e);
     regDiv.style.opacity = 0.2;
+    document.title = user.name+" 在线";
   });
   myPhone.on('unregistered', function(e){ 
     infoLb.innerText = "注册离线";
+    document.title = user.name+" 离线";
     msgInput.disabled = true;
     callBtn.disabled = true;
     regBtn.disabled = false;
@@ -278,6 +282,7 @@ var callOptions = {
 
       callTimer = setInterval(() => {
         infoLb.innerText = "通话时长 "+ timeFromNow();
+        document.title = infoLb.innerText;
       }, 1000);
     },
     'confirmed': function(data){
@@ -484,6 +489,7 @@ window.addEventListener("load", function(e){
 })
 
 window.addEventListener("beforeunload", function (e) {
+  console.log('ready to close?')
   saveConfig();
   myPhone?.unregister();
   callSession?.terminate();

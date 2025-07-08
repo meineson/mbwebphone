@@ -19,10 +19,17 @@
 <body>
   <script>
     const win = nw.Window.get();
-    win.on('close', function () {
+    win.on('close', function(e) {
       // this.minimize();
-      this.setShowInTaskbar(false);
-      this.hide();        
+      this.setShowInTaskbar(false);  
+      this.hide();     
+      
+      //macos command+q trigger web beforeunload event, need reload...
+      setTimeout(() => {
+        console.log("reload to do re-reg");
+        tray.remove();
+        win.reload();
+      }, 1000);
     });
 
     // Create a tray icon
@@ -50,6 +57,9 @@
         }
     } }));
     tray.menu = menu;    
+    tray.on('click', function(){
+      win.show(true);
+    })
   </script>  
   <iframe src="http://localhost:3000/"  
     allow="camera; microphone" class="full-size-iframe"></iframe>  

@@ -13,7 +13,7 @@
     "position": "center",
     "min_width": 640,
     "min_height": 480,
-    "icon": "favicon.ico",
+    "icon": "tray.png",
     "width": 1066,
     "height": 600,
     "always_on_top": true,
