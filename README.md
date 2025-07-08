@@ -82,3 +82,11 @@ or
 ./out/MBWebPhone APP 1.0.1 linux x86.zip
 or run ./out/MBWebPhone APP 1.0.1 linux [x64|x86]/MBWebPhone APP
 ```
+
+__Freeswitch DEMO__
+
+- call `1000-1019` to start p2p audio/video call.
+- call `9196` to start audio/video loopback echo test.
+- call `3500-3599` to start video conference (up to 100 rooms).
+
+all these defined in fscfg/dialplan/default.xml.
