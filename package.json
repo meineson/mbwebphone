@@ -1,6 +1,6 @@
 {
   "name": "mbwebphone",
-  "version": "1.1.0",
+  "version": "1.1.5",
   "main": "app.html",
   "node-main": "miniweb.js",
   "node-remote": "https://localhost:3000",
@@ -23,7 +23,7 @@
     "dev": "/Users/mac/nwjs/nwjs.app/Contents/MacOS/nwjs .",
     "dist": "mkdir -p ./out && tar zcvf ./out/mbwebphone.tgz index.html device.html *.js *.css *.ico *.png && build --tasks win-x64,mac-x64 .",    
     "start": "run --x64 .",
-    "dmg": "hdiutil create -volname 'MBWebPhone' -srcfolder 'out/mbwebphone 1.1.0 mac x64/MBWebPhone.app' -ov -format UDZO './out/MBWebPhone.dmg'"
+    "dmg": "hdiutil create -volname 'MBWebPhone' -srcfolder 'out/mbwebphone 1.1.5 mac x64/MBWebPhone.app' -ov -format UDZO './out/MBWebPhone.dmg'"
   },
   "author": "meineson",
   "license": "MIT",
