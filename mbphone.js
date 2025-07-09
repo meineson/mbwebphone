@@ -262,7 +262,7 @@ function timeFromNow() {
 }
 
 var answerOptions = {
-  'mediaConstraints': {'audio': {deviceId: deviceConfig.audioin}, 'video': videoConstraints},//video flag set by checkbox latter
+  // 'mediaConstraints': {'audio': {deviceId: deviceConfig.audioin}, 'video': videoConstraints},//video flag set by checkbox latter
   // 'pcConfig': {
   //   'iceServers': [{urls: server.stunServer}]
   // }
@@ -367,7 +367,7 @@ function getLocalStream(setStream, failedCb){
       setStream(stream);
     }).catch(error => {
       failedCb();
-      infoLb.innerText = "屏幕分享失败";
+      infoLb.innerText = "屏幕分享失败:"+error.name;
       console.error('媒体访问失败:', error.name); 
     }); 
   }else{
@@ -380,7 +380,7 @@ function getLocalStream(setStream, failedCb){
     })
     .catch(error => {
       failedCb();
-      infoLb.innerText = " 本地通话设备异常："+error.name;
+      infoLb.innerText = " 本地通话设备异常:"+error.name;
       console.error('媒体访问失败:', error.name); 
     }); 
   }

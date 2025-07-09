@@ -10,12 +10,18 @@
     .radio-group {
       display: block;
     }
+    .main{
+      margin: 30px;
+      display: flex;
+      flex-direction:column;
+      align-items:center;
+    }
   </style>
 </head>
 
 <body>
-  <h2>媒体设备配置</h2>
-  <div>
+  <div class="main">
+    <h2>媒体设备配置</h2>
     <h3>音频输入设备：</h3>
     <div class="radio-group" id="aidev">      
     </div>
@@ -54,32 +60,40 @@
       infoLb.innerText = '无法打开设备，无法呼叫';
     }
 
-    navigator.mediaDevices?.enumerateDevices()
-    .then(devices => {
-      devices.forEach(device => {
-        console.log(`${device.kind}: ${device.label} (ID: ${device.deviceId})`);
-        if(device.kind === 'audioinput'){
-          document.getElementById("aidev").innerHTML += buildDeviceOption(device);
-        }else if(device.kind === 'audiooutput'){
-          document.getElementById("aodev").innerHTML += buildDeviceOption(device);
-        }else if(device.kind === 'videoinput'){
-          document.getElementById("videv").innerHTML += buildDeviceOption(device);
+    navigator.mediaDevices.getUserMedia({audio:true, video:true})
+    .then(stream => {
+      navigator.mediaDevices?.enumerateDevices()
+      .then(devices => {
+        devices.forEach(device => {
+          console.log(`${device.kind}: ${device.label} (ID: ${device.deviceId})`);
+          if(device.kind === 'audioinput'){
+            document.getElementById("aidev").innerHTML += buildDeviceOption(device);
+          }else if(device.kind === 'audiooutput'){
+            document.getElementById("aodev").innerHTML += buildDeviceOption(device);
+          }else if(device.kind === 'videoinput'){
+            document.getElementById("videv").innerHTML += buildDeviceOption(device);
+          }
+        });
+        
+        //add desktop share video input
+        document.getElementById("videv").innerHTML += 
+          buildDeviceOption({kind:"videoinput", label:"桌面分享", deviceId:"desktop"})      
+      }).then(()=>{
+        //update ui select
+        try{
+          document.getElementById("audioinput-"+deviceConfig.audioin).checked = true;
+          document.getElementById("audiooutput-"+deviceConfig.audioout).checked = true;
+          document.getElementById("videoinput-"+deviceConfig.videoin).checked = true;
+        }catch{
+          document.getElementById("alert").innerHTML = "本机设备有变化，请重新选择，以免呼叫失败。";
         }
-      });
-      
-      //add desktop share video input
-      document.getElementById("videv").innerHTML += 
-        buildDeviceOption({kind:"videoinput", label:"桌面分享", deviceId:"desktop"})      
-    }).then(()=>{
-      //update ui select
-      try{
-        document.getElementById("audioinput-"+deviceConfig.audioin).checked = true;
-        document.getElementById("audiooutput-"+deviceConfig.audioout).checked = true;
-        document.getElementById("videoinput-"+deviceConfig.videoin).checked = true;
-      }catch{
-        document.getElementById("alert").innerHTML = "本机设备有变化，请重新选择，以免呼叫失败。";
-      }
-    });    
+      }); 
+            
+      stream.getTracks().forEach(track => track.stop());
+    })
+    .catch(error => {
+      alert("未能获取到设备权限！");
+    });         
 
     document.getElementById("saveconfig").addEventListener('click', function(){
       document.getElementsByName("audioinput").forEach(item => {

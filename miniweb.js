@@ -1,9 +1,14 @@
-const http = require('http');
+const https = require('https');
 const fs = require('fs');
 const path = require('path');
 const PORT = 3000;
 
-const server = http.createServer((req, res) => {
+const options = {
+	key: fs.readFileSync('./key/privatekey.pem'), //密钥路径
+	cert: fs.readFileSync('./key/certificate.pem')
+};
+
+const server = https.createServer(options, (req, res) => {
   //allow local file://app.html access        
   const filePath = path.join(__dirname, './', req.url === '/' ? 'index.html' : req.url);
   const fileExt = path.extname(filePath);
@@ -39,5 +44,5 @@ const server = http.createServer((req, res) => {
 });
   
 server.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}/`);
+  console.log(`Server running at https://localhost:${PORT}/`);
 });    

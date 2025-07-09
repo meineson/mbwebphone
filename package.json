@@ -3,8 +3,8 @@
   "version": "1.1.0",
   "main": "app.html",
   "node-main": "miniweb.js",
-  "node-remote": "http://localhost:3000",
-  "chromium-args": "--ignore-certificate-errors --use-fake-ui-for-media-stream",
+  "node-remote": "https://localhost:3000",
+  "chromium-args": "--ignore-certificate-errors --allow-insecure-localhost --allow-running-insecure-content",
   "type": "commonjs",
   "devDependencies": {
     "nwjs-builder-phoenix": "^1.15.0"
@@ -21,7 +21,7 @@
   },
   "scripts": {
     "dev": "/Users/mac/nwjs/nwjs.app/Contents/MacOS/nwjs .",
-    "dist": "mkdir -p ./out && tar zcvf ./out/mbwebphone.tgz index.html jssip-3.10.0.min.js mbphone.js mbweb.css miniweb.js && build --tasks win-x64,mac-x64 .",    
+    "dist": "mkdir -p ./out && tar zcvf ./out/mbwebphone.tgz index.html device.html *.js *.css *.ico *.png && build --tasks win-x64,mac-x64 .",    
     "start": "run --x64 .",
     "dmg": "hdiutil create -volname 'MBWebPhone' -srcfolder 'out/mbwebphone 1.1.0 mac x64/MBWebPhone.app' -ov -format UDZO './out/MBWebPhone.dmg'"
   },
