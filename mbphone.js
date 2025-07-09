@@ -45,7 +45,10 @@ var callSession = null;
 var remoteStream  = null;
 var callTimer = null;
 
+var deviceConfig = {audioin:'default', audioout:'default', videoin:'default'};
+
 const videoConstraints = {
+  deviceId: deviceConfig.videoin,
   width: { ideal: 1280 },
   height: { ideal: 720 },
   frameRate: { ideal: 30 },
@@ -65,7 +68,11 @@ function readConfig(){
   if(localStorage.getItem('server')){
     server = JSON.parse(localStorage.getItem('server'))
   }
-  console.log("config readed:", user, server);  
+  if(localStorage.getItem('devices')){
+    deviceConfig = JSON.parse(localStorage.getItem('devices'))
+    videoConstraints.deviceId = deviceConfig.videoin; //need update
+  }  
+  console.log("config readed:", user, server, deviceConfig);  
 }
 
 var clearCall = function(e){
@@ -255,7 +262,7 @@ function timeFromNow() {
 }
 
 var answerOptions = {
-  'mediaConstraints': {'audio': true, 'video': videoConstraints},//video flag set by checkbox latter
+  'mediaConstraints': {'audio': {deviceId: deviceConfig.audioin}, 'video': videoConstraints},//video flag set by checkbox latter
   // 'pcConfig': {
   //   'iceServers': [{urls: server.stunServer}]
   // }
@@ -300,7 +307,7 @@ var callOptions = {
       console.log("call ended", data);
     }
   },
-  'mediaConstraints': {'audio': true, 'video': videoConstraints},  //video flag set by checkbox latter
+  // 'mediaConstraints': {'audio': {deviceId: deviceConfig.audioin}, 'video': videoConstraints},  //video flag set by checkbox latter
   // 'pcConfig': {
   //     'iceServers': [{urls: server.stunServer}]
   // },
@@ -314,40 +321,69 @@ function getLocalStream(setStream, failedCb){
     return;
   }
 
-  navigator.mediaDevices?.enumerateDevices()
-  .then(devices => {
-    devices.forEach(device => {
-      console.log(`${device.kind}: ${device.label} (ID: ${device.deviceId})`);
-    });
+  navigator.permissions.query({ name: 'microphone' }).then(function(permissionStatus){
+    if(permissionStatus.state == "denied"){
+      alert("未授权麦克风访问权限，通话异常。");
+    }
+    console.log(permissionStatus);
   });
-
-  navigator.mediaDevices.getUserMedia({
-    audio: true,
-    video: vCallCheck.checked
-  })
-  .then(stream => {
-    setStream(stream);
-  })
-  .catch(error => {
-    failedCb();
-    infoLb.innerText = " 本地通话设备异常";
-    console.error('媒体访问失败:', error.name); 
+  navigator.permissions.query({ name: 'camera' }).then(function(permissionStatus){
+    if(permissionStatus.state == "denied"){
+      alert("未授权摄像头访问权限，视频通话异常。")
+    }
+    console.log(permissionStatus);
   });  
 
-  //share screen
-  // navigator.mediaDevices.getDisplayMedia({
-  //   audio: {
-  //     suppressLocalAudioPlayback: false,
-  //   },
-  //   systemAudio: "include",
-  //   video: true,
-  // })
-  // .then(stream => {
-  //   setStream(stream);
-  // }).catch(error => {
-  //   infoLb.innerText = "屏幕分享失败";
-  //   console.error('媒体访问失败:', error.name); 
-  // }); 
+  // navigator.mediaDevices?.enumerateDevices()
+  // .then(devices => {
+  //   devices.forEach(device => {
+  //     console.log(`${device.kind}: ${device.label} (ID: ${device.deviceId})`);
+  //   });
+  // });  
+
+  var getVideo = false;
+  if(vCallCheck.checked){
+    getVideo = videoConstraints;
+  }
+  console.log("video constraints:", getVideo);
+
+  if(getVideo?.deviceId === "desktop"){
+    //share screen
+    navigator.mediaDevices.getDisplayMedia({
+      audio: {
+        suppressLocalAudioPlayback: true,
+      },
+      
+      systemAudio: "include",
+      selfBrowserSurface: "exclude",
+      surfaceSwitching: "include",
+      monitorTypeSurfaces: "include",
+      preferCurrentTab: false,
+      video: {
+        displaySurface: "window",
+      }
+    })
+    .then(stream => {
+      setStream(stream);
+    }).catch(error => {
+      failedCb();
+      infoLb.innerText = "屏幕分享失败";
+      console.error('媒体访问失败:', error.name); 
+    }); 
+  }else{
+    navigator.mediaDevices.getUserMedia({
+      audio: {deviceId: deviceConfig.audioin},
+      video: getVideo
+    })
+    .then(stream => {
+      setStream(stream);
+    })
+    .catch(error => {
+      failedCb();
+      infoLb.innerText = " 本地通话设备异常："+error.name;
+      console.error('媒体访问失败:', error.name); 
+    }); 
+  }
 }
 
 //ui click cb
@@ -382,7 +418,7 @@ regBtn.addEventListener('click', function(){
   regBtn.disabled = true; //prevent dbl click
 });
 
-callBtn.addEventListener('click', function(){
+callBtn.addEventListener('click', function(){  
   if(callSession && callSession.direction == 'incoming'){      
     getLocalStream(function(localStream){
       answerOptions.mediaStream = localStream;
@@ -400,6 +436,8 @@ callBtn.addEventListener('click', function(){
     });    
   }else{
     callee = calleeInput.value.trim();
+    if(callee.length < 1) return;
+    
     user.lastCallee = callee;
     getLocalStream(function(localStream){
       views.selfView.srcObject = localStream; 
@@ -454,13 +492,13 @@ hangBtn.addEventListener('click', function(){
 });
 
 vCallCheck.addEventListener('change', function(e){
-  if(vCallCheck.checked){
-    callOptions.mediaConstraints.video = videoConstraints;
-    answerOptions.mediaConstraints.video = videoConstraints;
-  }else{
-    callOptions.mediaConstraints.video = false;
-    answerOptions.mediaConstraints.video = false;
-  }
+  // if(vCallCheck.checked){
+  //   callOptions.mediaConstraints.video = videoConstraints;
+  //   answerOptions.mediaConstraints.video = videoConstraints;
+  // }else{
+  //   callOptions.mediaConstraints.video = false;
+  //   answerOptions.mediaConstraints.video = false;
+  // }
 });
 
 eMsgCheck.addEventListener('change', function(e){

@@ -4,7 +4,7 @@
   "main": "app.html",
   "node-main": "miniweb.js",
   "node-remote": "http://localhost:3000",
-  "chromium-args": "--ignore-certificate-errors",
+  "chromium-args": "--ignore-certificate-errors --use-fake-ui-for-media-stream",
   "type": "commonjs",
   "devDependencies": {
     "nwjs-builder-phoenix": "^1.15.0"
@@ -16,7 +16,7 @@
     "icon": "tray.png",
     "width": 1066,
     "height": 600,
-    "always_on_top": true,
+    "always_on_top": false,
     "resizable": true 
   },
   "scripts": {

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MBWebPhone WebRTC Device Config</title>
+
+  <style>
+    .radio-group {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>媒体设备配置</h2>
+  <div>
+    <h3>音频输入设备：</h3>
+    <div class="radio-group" id="aidev">      
+    </div>
+    <h3>音频输出设备：</h3>
+    <div class="radio-group" id="aodev">      
+    </div>
+    <h3>视频输入设备：</h3>
+    <div class="radio-group" id="videv">      
+    </div>
+    <div>
+      </br>
+      <label style="color: red;" id="alert"></label></br>
+      <button id="saveconfig" style="font-weight: bolder;font-size: larger;">💾 保存</button>
+    </div>
+  </div>
+
+  <script>
+    var deviceConfig = {audioin:'default', audioout:'default', videoin:'desktop'};
+    
+    //read config or use default
+    if(localStorage.getItem('devices')){
+      deviceConfig = JSON.parse(localStorage.getItem('devices'))
+      console.log("config readed:", deviceConfig);  
+    }
+
+    function buildDeviceOption(device){
+      var radioElm;
+      var rid = device.deviceId;
+      radioElm = `<input type='radio' id='${device.kind}-${rid}' name='${device.kind}' value='${device.deviceId}'>`;
+      radioElm += `<label for='${device.kind}-${rid}'>${device.label}</label></input></br>`;
+      return radioElm;
+    }
+
+    if(!navigator.mediaDevices){
+      alert("浏览器无法打开音视频设备，请以https://或file://方式访问。");
+      infoLb.innerText = '无法打开设备，无法呼叫';
+    }
+
+    navigator.mediaDevices?.enumerateDevices()
+    .then(devices => {
+      devices.forEach(device => {
+        console.log(`${device.kind}: ${device.label} (ID: ${device.deviceId})`);
+        if(device.kind === 'audioinput'){
+          document.getElementById("aidev").innerHTML += buildDeviceOption(device);
+        }else if(device.kind === 'audiooutput'){
+          document.getElementById("aodev").innerHTML += buildDeviceOption(device);
+        }else if(device.kind === 'videoinput'){
+          document.getElementById("videv").innerHTML += buildDeviceOption(device);
+        }
+      });
+      
+      //add desktop share video input
+      document.getElementById("videv").innerHTML += 
+        buildDeviceOption({kind:"videoinput", label:"桌面分享", deviceId:"desktop"})      
+    }).then(()=>{
+      //update ui select
+      try{
+        document.getElementById("audioinput-"+deviceConfig.audioin).checked = true;
+        document.getElementById("audiooutput-"+deviceConfig.audioout).checked = true;
+        document.getElementById("videoinput-"+deviceConfig.videoin).checked = true;
+      }catch{
+        document.getElementById("alert").innerHTML = "本机设备有变化，请重新选择，以免呼叫失败。";
+      }
+    });    
+
+    document.getElementById("saveconfig").addEventListener('click', function(){
+      document.getElementsByName("audioinput").forEach(item => {
+        if(item.checked) {
+          console.log(item.id);
+          deviceConfig.audioin = item.id.split("-")[1];
+        }
+      });
+      document.getElementsByName("audiooutput").forEach(item => {
+        if(item.checked) {
+          console.log(item.id);
+          deviceConfig.audioout = item.id.split("-")[1];
+        }
+      });
+      document.getElementsByName("videoinput").forEach(item => {
+        if(item.checked) {
+          console.log(item.id);
+          deviceConfig.videoin = item.id.split("-")[1];
+        }
+      });
+
+      localStorage.setItem('devices', JSON.stringify(deviceConfig));
+      console.log("config saved:", deviceConfig);  
+      document.getElementById("alert").innerHTML = "设备选择已保存。";
+    })
+  </script>
+</body>
+</html>

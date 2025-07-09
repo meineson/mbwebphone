@@ -28,14 +28,15 @@
       <input type="text" placeholder="sip号码" value="" size="8" id="uname"></input>
       <input type="password" placeholder="sip密码" value="1000" size="8" id="upwd"></input>
       <button id="reg">🔄 注册</button>
+      <a href="./device.html" target="_blank">配置</a>
     </div>
     <div class="calldiv">  
       <span id="status">等待注册在线后可呼叫</span>
       <textarea id="msgbox" rows="10" cols="30" readonly hidden placeholder="暂无消息"
         style="background: #000;color: white;opacity: 0.5;" ></textarea>
       <input type="text" placeholder="被叫号码" value="" size="10" id="callee"></input>
-      <input type="checkbox" id="vCall" checked>视频</input>
-      <input type="checkbox" id="eMsg">消息</input>
+      <input type="checkbox" id="vCall" checked><label for="vCall">视频</label></input>
+      <input type="checkbox" id="eMsg"><label for="eMsg">消息</label></input>
       <button id="call" disabled>🟢 呼出/应答</button>        
       <button id="hangup" disabled>🚫 挂断/取消</button>
       <input type="text" placeholder="文本消息，Enter发送" hidden disabled
