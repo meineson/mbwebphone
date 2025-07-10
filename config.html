@@ -4,22 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MBWebPhone 媒体设备配置</title>
-  <style>
-    div.select {
-        display: inline-block;
-        margin: 0 0 1em 0;
-    }
-
-    p.small {
-        font-size: 0.7em;
-    }
-
-    label {
-        width: 12em;
-        display: inline-block;
-    }
-  </style>
+  <title>MBWebPhone 媒体设备配置</title>  
   <style>
     .radio-group {
       display: block;
@@ -35,21 +20,6 @@
 
 <body>
   <div class="main">
-    <div class="select">
-        <label for="audioSource">Audio input source: </label><select id="audioSource"></select>
-    </div>
-
-    <div class="select">
-        <label for="audioOutput">Audio output destination: </label><select id="audioOutput"></select>
-    </div>
-
-    <div class="select">
-        <label for="videoSource">Video source: </label><select id="videoSource"></select>
-    </div>
-
-    <video id="video" playsinline autoplay></video>
-    <script src="config.js" async></script>
-    
     <h3>音频输入设备：</h3>
     <div class="radio-group" id="aidev">      
     </div>
@@ -63,6 +33,7 @@
       </br>
       <label style="color: red;" id="alert"></label></br>
       <button id="saveconfig" style="font-weight: bolder;font-size: larger;">💾 保存</button>
+      <button id="cancel" style="font-weight: bolder;font-size: larger;">✖️ 取消</button>
     </div>
   </div>
 
@@ -78,8 +49,13 @@
     function buildDeviceOption(device){
       var radioElm;
       var rid = device.deviceId;
-      radioElm = `<input type='radio' id='${device.kind}-${rid}' name='${device.kind}' value='${device.deviceId}'>`;
-      radioElm += `<label for='${device.kind}-${rid}'>${device.label}</label></input></br>`;
+      if(device.deviceId === ""){       
+        radioElm = `<input type='radio' id='${device.kind}-default' name='${device.kind}' value='default'>`;
+        radioElm += `<label for='${device.kind}-default'>默认设备（系统隐私保护）</label></input></br>`;
+      }else{
+        radioElm = `<input type='radio' id='${device.kind}-${rid}' name='${device.kind}' value='${device.deviceId}'>`;
+        radioElm += `<label for='${device.kind}-${rid}'>${device.label}</label></input></br>`;
+      }
       return radioElm;
     }
 
@@ -148,6 +124,10 @@
       document.getElementById("alert").innerHTML = "设备选择已保存。";
       history.back();
     })
+
+    document.getElementById("cancel").addEventListener('click', function(){
+      history.back();
+    });
   </script>
 </body>
 </html>
