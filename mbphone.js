@@ -323,16 +323,16 @@ function getLocalStream(setStream, failedCb){
 
   navigator.permissions.query({ name: 'microphone' }).then(function(permissionStatus){
     if(permissionStatus.state == "denied"){
-      alert("未授权麦克风访问权限，通话异常。");
+      alert("没有麦克风设备或未授权访问权限，通话异常。");
     }
     console.log(permissionStatus);
   });
-  navigator.permissions.query({ name: 'camera' }).then(function(permissionStatus){
-    if(permissionStatus.state == "denied"){
-      alert("未授权摄像头访问权限，视频通话异常。")
-    }
-    console.log(permissionStatus);
-  });  
+  // navigator.permissions.query({ name: 'camera' }).then(function(permissionStatus){
+  //   if(permissionStatus.state == "denied"){
+  //     alert("未授权摄像头访问权限，视频通话异常。")
+  //   }
+  //   console.log(permissionStatus);
+  // });  
 
   // navigator.mediaDevices?.enumerateDevices()
   // .then(devices => {
