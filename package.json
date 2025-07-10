@@ -1,10 +1,10 @@
 {
   "name": "mbwebphone",
   "version": "1.1.5",
-  "main": "app.html",
+  "main": "https://localhost:3000/app.html",
   "node-main": "miniweb.js",
   "node-remote": "https://localhost:3000",
-  "chromium-args": "--ignore-certificate-errors --allow-insecure-localhost --allow-running-insecure-content",
+  "chromium-args": "--ignore-certificate-errors --allow-http-screen-capture --allow-insecure-localhost --allow-running-insecure-content",
   "type": "commonjs",
   "devDependencies": {
     "nwjs-builder-phoenix": "^1.15.0"
@@ -21,7 +21,7 @@
   },
   "scripts": {
     "dev": "/Users/mac/nwjs/nwjs.app/Contents/MacOS/nwjs .",
-    "dist": "mkdir -p ./out && tar zcvf ./out/mbwebphone.tgz index.html device.html *.js *.css *.ico *.png && build --tasks win-x64,mac-x64 .",    
+    "dist": "mkdir -p ./out && tar zcvf ./out/mbwebphone.tgz index.html config.html *.js *.css *.ico *.png && build --tasks mac-x64,win-x64 .",    
     "start": "run --x64 .",
     "dmg": "hdiutil create -volname 'MBWebPhone' -srcfolder 'out/mbwebphone 1.1.5 mac x64/MBWebPhone.app' -ov -format UDZO './out/MBWebPhone.dmg'"
   },
@@ -53,7 +53,9 @@
       "icon": "logo.icns",
       "plistStrings": {
         "CFBundleIdentifier": "mbwebphone.cn.mbstudio",
-        "CFBundleDocumentTypes": []
+        "CFBundleDocumentTypes": [],
+        "NSCameraUsageDescription": "video call",
+        "NSMicrophoneUsageDescription": "audio call"
       }
     },
     "nsis": {
