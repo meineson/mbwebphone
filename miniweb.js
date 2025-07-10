@@ -38,6 +38,7 @@ const server = https.createServer(options, (req, res) => {
     }
     // 成功读取文件，设置内容类型并返回文件内容。
     res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Permissions-Policy", "camera=*,microphone=*,display-capture=*,speaker-selection=*");
     res.writeHead(200, { 'Content-Type': contentType });
     res.end(content, 'utf-8');
   });
