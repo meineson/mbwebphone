@@ -53,7 +53,11 @@
       click: function(){
         if(confirm("确认退出？")){
           tray.remove();
-          win.close(true);
+          nw.Window.getAll(function(windows){
+            windows.forEach(win => {
+              win.close(true);
+            });
+          })
         }
     } }));
     tray.menu = menu;    
@@ -62,6 +66,7 @@
     })
   </script>  
   <iframe src="https://localhost:3000/"  
-    allow="camera; microphone; display-capture" class="full-size-iframe"></iframe>
+    allow="camera; microphone; display-capture; speaker-selection" 
+    class="full-size-iframe"></iframe>
 </body>
 </html>
