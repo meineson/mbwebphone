@@ -126,12 +126,14 @@ span {
   align-items: center;
   font-weight: bolder;
   border-radius: 5px;
-  outline:auto;
+  outline-width: 1px;
+  outline-color: gray ;
+  outline-style:solid;
   top: 40%;
   height: 100px;
-  width: 90%; 
+  width: 400px; 
   overflow: auto; 
-  border: 10px;
+  border: 1px;
   background-color: rgba(100, 100, 100, 0.9); 
 }
 
@@ -141,9 +143,9 @@ span {
   align-items:center;
 }
 
-
 .caller{
   display: none;
+  margin-left: 5px;
   gap: 5px;
   align-items:center;
 }

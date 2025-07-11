@@ -240,7 +240,7 @@ function uaStart(){
         showRemoteStreams(data.peerconnection);
       });
 
-      var callex = "(" + callReq.from.display_name + ")" + callReq.from._uri._user;
+      var callex = callReq.from._uri._user;
       setupCall(true, callex, "来电");
       
       try{
