@@ -33,6 +33,7 @@ const rejectBtn = document.getElementById('reject');
 const vAnsBtn = document.getElementById('vcallanswer');
 const aAnsBtn = document.getElementById('callanswer');
 const infoLb = document.getElementById('status');
+const regStat = document.getElementById('regstat');
 const alertMsg = document.getElementById('alertmsg');
 const infoBox = document.getElementById('infobox');
 const callerDiv = document.getElementById('callerdiv');
@@ -92,7 +93,6 @@ var clearCall = function(e){
   calleeDiv.style.display = "flex";
 
   infoLb.innerText = "呼叫结束";
-  document.title = "MBWebPhone";
 
   try{
     callSession.terminate();
@@ -148,13 +148,12 @@ function uaStart(){
 
   //server state cb
   myPhone.on('connected', function(e){ 
-    infoLb.innerText = "服务器已连接，等待注册";
+    infoLb.innerText = "服务器已连接";
     console.log('connected');
   });
   myPhone.on('disconnected', function(e){ 
     infoMsg = `❗️ 服务器中断（${e.code}）`;
-    infoLb.innerText = infoMsg;
-    document.title = infoMsg;
+    regStat.innerText = infoMsg;
     msgInput.disabled = true;
     callBtn.disabled = true;
     vcallBtn.disabled = true;  
@@ -176,11 +175,11 @@ function uaStart(){
 
     infoMsg = "🟩 " + user.name +" 在线";
     document.title = infoMsg;
-    infoLb.innerText = infoMsg;
+    regStat.innerText = infoMsg;    
   });
   myPhone.on('unregistered', function(e){ 
     infoMsg = "🟥 " + user.name +" 离线";
-    infoLb.innerText = infoMsg;
+    regStat.innerText = infoMsg;
     document.title = infoMsg;
     msgInput.disabled = true;
     callBtn.disabled = true;
@@ -189,7 +188,7 @@ function uaStart(){
   });
   myPhone.on('registrationFailed', function(e){ 
     infoMsg = "🟥 " + user.name + ` 注册失败（${e.cause}）`;
-    infoLb.innerText = infoMsg;
+    regStat.innerText = infoMsg;
     document.title = infoMsg;
 
     msgInput.disabled = true;
@@ -318,8 +317,7 @@ var callOptions = {
       console.log("call accepted", data);
 
       callTimer = setInterval(() => {
-        infoLb.innerHTML = `<b>📳 <u>与${calleeInput.value}通话中</u></b> ` + timeFromNow();
-        document.title = infoLb.innerText;
+        infoLb.innerHTML = `📳 与${calleeInput.value}通话中 ` + timeFromNow();        
       }, 1000);
     },
     'confirmed': function(data){
