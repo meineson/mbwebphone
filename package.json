@@ -21,7 +21,7 @@
   },
   "scripts": {
     "dev": "/Users/mac/nwjs/nwjs.app/Contents/MacOS/nwjs .",
-    "dist": "mkdir -p ./out && tar zcvf ./out/mbwebphone.tgz index.html config.html *.js *.css *.ico *.png && build --tasks mac-x64,win-x64 .",    
+    "dist": "mkdir -p ./out && tar zcvf ./out/mbwebphone.tgz index.html config.html favicon.ico *.js *.svg *.css *.ico *.png key/* && build --tasks mac-x64,win-x64 .",    
     "start": "run --x64 .",
     "dmg": "hdiutil create -volname 'MBWebPhone' -srcfolder 'out/mbwebphone 1.2.0 mac x64/MBWebPhone.app' -ov -format UDZO './out/MBWebPhone.dmg'"
   },

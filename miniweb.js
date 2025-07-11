@@ -17,6 +17,15 @@ const server = https.createServer(options, (req, res) => {
     case '.css':
       contentType = 'text/css';
       break;
+    case '.png':
+      contentType = 'image/png';
+      break;
+    case '.ico':
+      contentType = 'image/x-icon';
+      break;
+    case '.svg':
+      contentType = 'image/svg+xml';
+      break;
     case '.js':
       contentType = 'text/javascript';
       break;
