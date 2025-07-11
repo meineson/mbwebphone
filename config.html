@@ -6,6 +6,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MBWebPhone 媒体设备配置</title>  
   <style>
+    .regdiv{
+      display: flex;
+      flex-direction:column;
+      align-items:center;
+      width: 100%;
+      justify-content: center;  
+      gap: 5px;
+    }    
     .radio-group {
       display: block;
     }
@@ -19,6 +27,13 @@
 </head>
 
 <body>
+  <div class="regdiv" id="regdiv">
+    <h3>SIP账号配置：</h3>
+    <input type="text" placeholder="IP / Domain" id="srvaddr"></input>
+    <input type="text" placeholder="[ws|wss]://ip:port空白自动" value="" id="wsaddr"></input>
+    <input type="text" placeholder="sip号码" value="" text="d" id="uname"></input>
+    <input type="password" placeholder="sip密码" value="" id="upwd"></input>
+  </div>    
   <div class="main">
     <h3>音频输入设备：</h3>
     <div class="radio-group" id="aidev">      
@@ -39,13 +54,48 @@
 
   <script>
     var deviceConfig = {audioin:'default', audioout:'default', videoin:'desktop'};
-    
+    var server = {
+      domain: '',
+      sipPort: 8060,
+      wsServers: '',  
+    };
+    var user = {
+        disName: '',
+        name: '',
+        authName: '',
+        authPwd: '',
+        regExpires: 180,
+        lastCallee: ''
+    }    
+
     //read config or use default
+    if(localStorage.getItem('user')){
+      user = JSON.parse(localStorage.getItem('user'))
+    }
+    if(localStorage.getItem('server')){
+      server = JSON.parse(localStorage.getItem('server'))
+    }    
     if(localStorage.getItem('devices')){
       deviceConfig = JSON.parse(localStorage.getItem('devices'))
-      console.log("config readed:", deviceConfig);  
     }
+    console.log("config readed:", user, server, deviceConfig);  
 
+    const unameInput = document.getElementById("uname");
+    const upwdInput = document.getElementById("upwd");
+    const srvInput = document.getElementById("srvaddr");
+    const wsInput = document.getElementById("wsaddr");
+    srvInput.value = server.domain;
+    wsInput.value = server.wsServers;
+    unameInput.value = user.name;
+    upwdInput.value = user.authPwd;
+
+    function saveConfig(){
+      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('server', JSON.stringify(server)); 
+      localStorage.setItem('devices', JSON.stringify(deviceConfig));
+      console.log("config saved:", user, server, deviceConfig);  
+    }
+    
     function buildDeviceOption(device){
       var radioElm;
       var rid = device.deviceId;
@@ -100,6 +150,19 @@
     });         
 
     document.getElementById("saveconfig").addEventListener('click', function(){
+      server.domain = srvInput.value.trim();
+      if(wsInput.value.trim() == ""){
+        server.wsServers = "ws://"+server.domain+":5066";
+        wsInput.value = server.wsServers;
+      }else{
+        server.wsServers = wsInput.value;
+      }
+      
+      user.disName = unameInput.value.trim();
+      user.name = unameInput.value.trim();
+      user.authName = unameInput.value.trim();
+      user.authPwd = upwdInput.value.trim();
+      
       document.getElementsByName("audioinput").forEach(item => {
         if(item.checked) {
           console.log(item.id);
@@ -119,8 +182,7 @@
         }
       });
 
-      localStorage.setItem('devices', JSON.stringify(deviceConfig));
-      console.log("config saved:", deviceConfig);  
+      saveConfig();
       document.getElementById("alert").innerHTML = "设备选择已保存。";
       history.back();
     })

@@ -15,37 +15,50 @@
       <video id="remote-video" width="100%" autoplay visible>
         <p>Your browser doesn't support HTML5 video.</p>
       </video>
-      <div class="video-local">
+      <div class="video-local" id="lvdiv">
         <video id="local-video" width="100%" autoplay>
           <p>Your browser doesn't support HTML5 video.</p>
         </video>
       </div>
     </div> 
     
-    <div class="regdiv" id="regdiv">
-      <input type="text" placeholder="server IP/Domain" value="" size="15" id="srvaddr"></input>
-      <input type="text" placeholder="空白自动生成 [ws|wss]://ip:port" value="" id="wsaddr"></input>
-      <input type="text" placeholder="sip号码" value="" size="8" id="uname"></input>
-      <input type="password" placeholder="sip密码" value="1000" size="8" id="upwd"></input>
-      <button id="reg">🔄 注册</button>
-      <a href="config.html" target="_self">⚙️ 配置</a>
-    </div>
-    <div class="calldiv">  
-      <span id="status">等待注册在线后可呼叫</span>
+    <div class="infobox" id="infobox">
+      <div id="callerdiv" class="caller">
+        <label id="alertmsg">xxxx来电</label>
+        <button id="vcallanswer" class="btn"><img src="vcall.svg" width="48px"></button>
+        <button id="callanswer" class="btn"><img src="acall.svg" width="48px"></button>        
+        <button id="reject" class="btn"><img src="hang.svg" width="48px"></button> 
+      </div>
+
+      <div id="calleediv" class="callee">        
+        <input type="text" style="font-size: xx-large;text-align:center;margin: 5px;"
+          placeholder="被叫号码" autofocus size="8" id="callee"></input>
+        <input type="checkbox" id="vcallcheck" checked hidden></input>
+        <button id="vcall" disabled class="btn"><img src="vcall.svg" width="48px"></button>        
+        <button id="call" disabled class="btn"><img src="acall.svg" width="48px"></button>        
+      </div>
+    </div>    
+    <div class="statusbox" id="regdiv">
+      <div style="display: flex;margin-left: 10px;">        
+        <a href="config.html" target="_self">⚙️ 配置</a>
+      </div>
+      <div style="margin-right: 10px;color: bisque;">
+        <label id="status">⚠️ 等待注册</label>
+      </div>
+      <div id="callctrl" style="display:none;align-items: center;margin-right: 10px;">
+        <button id="hangup"  class="btn"><img src="hang.svg" width="40px"></button> 
+        <button id="micctrl"  class="btn"><img src="mic.svg" width="25px"></button>
+        <button id="camctrl"  class="btn"><img src="cam.svg" width="25px"></button>
+        <label for="eMsg"><img src="msg.svg" width="30px"></label>
+        <input type="checkbox" id="eMsg" hidden></input>        
+      </div>      
+    </div>    
+    <div class="msg">  
       <textarea id="msgbox" rows="10" cols="30" readonly hidden placeholder="暂无消息"
-        style="background: #000;color: white;opacity: 0.5;" ></textarea>
-      <input type="text" placeholder="被叫号码" value="" size="10" id="callee"></input>
-      <input type="checkbox" id="vCall" checked><label for="vCall">视频</label></input>
-      <input type="checkbox" id="eMsg"><label for="eMsg">消息</label></input>
-      <button id="call" disabled>🟢 呼出/应答</button>        
-      <button id="hangup" disabled>🚫 挂断/取消</button>
+        style="background: #000;color: white;opacity: 0.5;" ></textarea>      
       <input type="text" placeholder="文本消息，Enter发送" hidden disabled
         maxlength="70" value="" size="30" id="msg"></input>
-    </div> 
-    <div class="infobox" id="infobox">
-      <img src="connecting.png" width="50"/>
-      <span id="alertmsg"></span>
-    </div>
+    </div>     
   </div>
   <script src="./mbphone.js"></script>
 </body>
