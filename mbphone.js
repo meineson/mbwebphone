@@ -379,7 +379,7 @@ function getLocalStream(setStream, failedCb){
       },
       
       systemAudio: "include",
-      selfBrowserSurface: "exclude",
+      selfBrowserSurface: "include",
       surfaceSwitching: "include",
       monitorTypeSurfaces: "include",
       preferCurrentTab: false,

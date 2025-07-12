@@ -37,19 +37,20 @@
 
     // Give it a menu
     var menu = new nw.Menu();
-    menu.append(new nw.MenuItem({ type: 'normal', label: '界面显示', 
-      key: 's', modifiers: 'ctrl',
+    menu.append(new nw.MenuItem({ type: 'normal', label: '显示', 
+      key: 's',
       click: function(){
         win.show(true);
     } }));
     menu.append(new nw.MenuItem({ type: 'normal', label: '重启',  
-      key: 'r', modifiers: 'ctrl',
+      key: 'r',
       click: function(){
         tray.remove();
         win.reloadIgnoringCache();
     } }));    
+    menu.append(new nw.MenuItem({ type: 'separator' }));
     menu.append(new nw.MenuItem({ type: 'normal', label: '退出',  
-      key: 'q', modifiers: 'ctrl',
+      key: 'q',
       click: function(){
         if(confirm("确认退出？")){
           tray.remove();
@@ -64,6 +65,23 @@
     tray.on('click', function(){
       win.show(true);
     })
+
+    document.body.addEventListener('contextmenu', function(ev) { 
+      ev.preventDefault();
+      menu.popup(ev.x, ev.y);
+      return false;
+    });    
+
+    //only single instance
+    nw.App.on('open', function(args){
+      console.log('open args:', args);
+      win.show(true);
+    });
+    nw.App.on('reopen', function(args){
+      console.log('reopen');
+      win.show(true);
+    });    
+
   </script>  
   <iframe src="index.html"  
     allow="camera; microphone; display-capture; speaker-selection" 

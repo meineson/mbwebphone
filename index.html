@@ -39,27 +39,32 @@
       </div>
     </div>    
     <div class="statusbox" id="regdiv">
-      <div style="display: flex;margin-left: 10px;gap:5px;">
-        <label id="regstat">⚠️ 等待注册</label>        
-        <a href="config.html" target="_self">⚙️ 配置</a>
+      <div style="display: flex;margin-left: 10px;gap:5px;align-items: center;">
+        <label id="regstat">⚠️ 等待注册</label>                
       </div>
       <div style="margin-right: 10px;color: bisque;">
         <label id="status"></label>
-      </div>
-      <div id="callctrl" style="display:none;align-items: center;margin-right: 10px;">
-        <button id="hangup"  class="btn"><img src="hang.svg" width="40px"></button> 
-        <button id="micctrl"  class="btn"><img src="mic.svg" width="25px"></button>
-        <button id="camctrl"  class="btn"><img src="cam.svg" width="25px"></button>
-        <label for="eMsg"><img src="msg.svg" width="30px"></label>
-        <input type="checkbox" id="eMsg" hidden></input>        
       </div>      
     </div>    
+    <div id="callctrl" class="callctrl">
+      <button id="hangup"  class="btn"><img src="hang.svg" width="40px"></button> 
+      <button id="micctrl"  class="btn"><img src="mic.svg" width="25px"></button>
+      <button id="camctrl"  class="btn"><img src="cam.svg" width="25px"></button>      
+    </div>  
+    <div class="msgbtn">
+      <label for="eMsg"><img src="msg.svg" width="32px"></label>
+      <input type="checkbox" id="eMsg" hidden></input>        
+    </div>       
     <div class="msg">  
       <textarea id="msgbox" rows="10" cols="30" readonly hidden placeholder="暂无消息"
-        style="background: #000;color: white;opacity: 0.5;" ></textarea>      
+        style="background: #000;color: white;opacity: 0.8;" ></textarea>      
       <input type="text" placeholder="文本消息，Enter发送" hidden disabled
-        maxlength="70" value="" size="30" id="msg"></input>
-    </div>     
+        maxlength="70" value="" size="25" id="msg"></input>
+    </div>    
+    <div style="position: fixed;bottom: 5px;right: 5px;z-index:1;">
+      <a href="config.html" target="_self">⚙️ 配置</a>
+      <a href="" onclick="alert('MBWebPhone v1.2.0')">❔关于</a>
+    </div> 
   </div>
   <script src="./mbphone.js"></script>
 </body>
