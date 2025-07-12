@@ -473,6 +473,8 @@ vcallBtn.addEventListener('click', function(){
 
 callBtn.addEventListener('click', function(){   
   document.getElementById('vdiv').style.backgroundImage = 'url(mic.svg)';
+  document.getElementById('vdiv').style.backgroundRepeat = 'no-repeat';
+  document.getElementById('vdiv').style.backgroundPosition = 'center';
   callOrAnswer(false);  
 });
 
