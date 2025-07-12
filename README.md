@@ -44,7 +44,8 @@ send mbwebphone.tgz to users:
 #tar zxvf mbwebphone.tgz
 #node miniweb.js
 ```
-visit http://localhost:3000 in chrome,edge,safari.
+visit https://localhost:3000 in chrome,edge,safari.
+> old release use http://localhost:3000
 
 __Windows/Linux/MacOS release__
 
