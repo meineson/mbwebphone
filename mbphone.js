@@ -16,6 +16,11 @@ var user = {
     lastCallee: ''
 }
 
+const VERSION = "MBWebPhone V1.2.0"
+function showVersion(){
+  alert(VERSION);
+}
+
 const views = {
   'selfView':   document.getElementById('local-video'),
   'remoteView': document.getElementById('remote-video')
@@ -140,7 +145,7 @@ function uaStart(){
     register: true,
     register_expires: user.regExpires,
     connection_recovery_max_interval: 10,
-    user_agent: 'MBWebPhone 1.0'
+    user_agent: VERSION
   };
   //https://jssip.net/documentation/api/ua_configuration_parameters/#parameter_authorization_user
 
