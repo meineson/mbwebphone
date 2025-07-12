@@ -184,11 +184,11 @@
 
       saveConfig();
       document.getElementById("alert").innerHTML = "设备选择已保存。";
-      history.back();
+      window.location.href = "index.html";  //history goback maybe not reload
     })
 
     document.getElementById("cancel").addEventListener('click', function(){
-      history.back();
+      window.location.href = "index.html";
     });
   </script>
 </body>

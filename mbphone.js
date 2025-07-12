@@ -13,8 +13,8 @@ var user = {
     authName: '',
     authPwd: '',
     regExpires: 180,
-    lastCallee: ''
 }
+var lastCallee = '';
 
 const VERSION = "MBWebPhone V1.2.0"
 function showVersion(){
@@ -64,12 +64,9 @@ const videoConstraints = {
   // facingMode: { exact: "user" }
 };
 
-function saveConfig(){
-  localStorage.setItem('user', JSON.stringify(user));
-  console.log("config saved:", user, server);  
-}
-
 function readConfig(){
+  calleeInput.value = localStorage.getItem('lastcallee');
+
   if(localStorage.getItem('user')){
     user = JSON.parse(localStorage.getItem('user'))
   }
@@ -307,7 +304,7 @@ var answerOptions = {
 var callOptions = {
   'eventHandlers': {
     'progress':   function(data){       
-      setupCall(false, calleeInput.value, "振铃中");      
+      setupCall(false, lastCallee, "振铃中");      
       console.log("ringing", data);
     },
     'failed':     function(data){ 
@@ -318,11 +315,11 @@ var callOptions = {
       console.log('invite ready to send', data.request);
     },
     'accepted':  function(data){ 
-      setupCall(false, calleeInput.value, "呼叫接通");
+      setupCall(false, lastCallee, "呼叫接通");
       console.log("call accepted", data);
 
       callTimer = setInterval(() => {
-        infoLb.innerHTML = `📳 与${calleeInput.value}通话中 ` + timeFromNow();        
+        infoLb.innerHTML = `📳 与${lastCallee}通话中 ` + timeFromNow();        
       }, 1000);
     },
     'confirmed': function(data){
@@ -447,10 +444,9 @@ function callOrAnswer(videocall = true){
       callSession.terminate();
     });    
   }else{
-    callee = calleeInput.value.trim();
-    if(callee.length < 1) return;
+    lastCallee = calleeInput.value.trim();
+    if(lastCallee.length < 1) return;
     
-    user.lastCallee = callee;
     getLocalStream(function(localStream){
       lvDiv.style.display = "flex";
       views.selfView.srcObject = localStream; 
@@ -458,9 +454,9 @@ function callOrAnswer(videocall = true){
       callOptions.mediaStream = localStream;  //U can choose different device to callout
       console.log(callOptions);
 
-      var uri  = new JsSIP.URI('sip', callee, server.domain, server.sipPort);
+      var uri  = new JsSIP.URI('sip', lastCallee, server.domain, server.sipPort);
       callSession =  myPhone.call(uri.toAor(), callOptions);
-      console.log('dial out:', callee);
+      console.log('dial out:', lastCallee);
       infoLb.innerText = "呼叫中...";      
     }, function(){
       callSession?.terminate();
@@ -507,10 +503,10 @@ msgInput.addEventListener('keydown', function(event) {
 
     var callee = calleeInput.value.trim();
     var newmsg = msgInput.value.trim();
-    user.lastCallee = callee;
+    lastCallee = callee;
 
     if(newmsg.length > 0){
-      var uri  = new JsSIP.URI('sip', callee, server.domain, server.sipPort);
+      var uri  = new JsSIP.URI('sip', lastCallee, server.domain, server.sipPort);
       myPhone.sendMessage(uri.toAor(), newmsg, msgOptions);
 
       msgInput.value = "";
@@ -551,7 +547,7 @@ window.addEventListener("load", function(e){
 
 window.addEventListener("beforeunload", function (e) {
   console.log('ready to close?')
-  saveConfig();
+  localStorage.setItem('lastcallee', lastCallee);
   myPhone?.unregister();
   callSession?.terminate();
   myPhone?.stop();
