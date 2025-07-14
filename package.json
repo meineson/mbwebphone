@@ -11,16 +11,40 @@
   "scripts": {
     "start": "electron .",
     "dir": "electron-builder --dir",
-    "dist": "electron-builder"
+    "mac": "electron-builder",
+    "win": "electron-builder -w portable",
+    "lin": "electron-builder -l deb",
+    "web": "mkdir -p ./dist && tar zcvf ./dist/mbwebphone.tgz *.html *.js *.css *.ico *.png key/* img/*"
   },
   "devDependencies": {
-    "electron": "^37.2.1"
+    "electron": "^37.2.1",
+    "electron-builder": "^26.0.12"
   },
   "postinstall": "electron-builder install-app-deps",
   "build": {
     "appId": "mbwebphone.cn.mbstudio",
     "mac": {
-      "category": "public.app-category.utilities"
+      "icon": "build/icon.icns",
+      "category": "public.app-category.utilities",
+      "extendInfo": {
+        "hardenedRuntime": true,
+        "entitlements": "entitlements.mac.plist",
+        "entitlementsInherit": "entitlements.mac.plist",
+        "NSMicrophoneUsageDescription": "需要麦克风进行语音通话。",
+        "NSCameraUsageDescription": "需要摄像头进行视频通话。",
+        "NSScreenCaptureUsageDescription": "需要录制权限进行桌面分享。",
+        "com.apple.security.device.audio-input": true,
+        "com.apple.security.device.camera": true
+      }
+    },
+    "win": {
+      "icon": "build/icon.png", 
+      "executableName": "mbwebphone",
+      "target": ["nsis", "portable"]
+    },
+    "linux": {
+      "icon": "build/icon.ico",
+      "target": ["deb", "rpm", "zip"]
     }
   }
 }

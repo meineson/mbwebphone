@@ -51,18 +51,18 @@ const createWindow = () => {
 }
 
 app.whenReady().then(() => {
-  const icon = nativeImage.createFromPath('tray.png')
-  var tray = new Tray(icon)
+  const icon = nativeImage.createFromPath('icon.png')
+  // var tray = new Tray(icon)
 
-  const contextMenu = Menu.buildFromTemplate([
-    { label: '显示', type: 'normal' },
-    { label: '重启', type: 'normal' },
-    { label: '退出', type: 'normal' }
-  ])
+  // const contextMenu = Menu.buildFromTemplate([
+  //   { label: '显示', type: 'normal' },
+  //   { label: '重启', type: 'normal' },
+  //   { label: '退出', type: 'normal' }
+  // ])
 
-  tray.setContextMenu(contextMenu)  
-  tray.setToolTip('MBWebPhone 1.2.0')
-  tray.setTitle('MBWebPhone')
+  // tray.setContextMenu(contextMenu)  
+  // tray.setToolTip('MBWebPhone 1.2.0')
+  // tray.setTitle('MBWebPhone')
 
   createWindow()
   
