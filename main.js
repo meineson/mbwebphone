@@ -33,7 +33,8 @@ checkAndApplyDeviceAccessPrivilege();
 const createWindow = () => {
   const win = new BrowserWindow({
     width: 1066,
-    height: 600
+    height: 600,
+    autoHideMenuBar: true
   })
 
   session.defaultSession.setDisplayMediaRequestHandler((request, callback) => {
@@ -48,6 +49,7 @@ const createWindow = () => {
   }, { useSystemPicker: true })
 
   win.loadFile('index.html')
+  Menu.setApplicationMenu(null); 
 }
 
 app.whenReady().then(() => {

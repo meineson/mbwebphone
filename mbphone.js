@@ -16,7 +16,7 @@ var user = {
 }
 var lastCallee = '';
 
-const VERSION = "MBWebPhone V1.2.0"
+const VERSION = "MBWebPhone V1.3.0"
 function showVersion(){
   alert(VERSION);
 }
