@@ -1,68 +1,70 @@
 {
   "name": "mbwebphone",
   "version": "1.2.0",
-  "main": "https://localhost:3000/app.html",
-  "node-main": "miniweb.js",
-  "node-remote": "https://localhost:3000",
-  "chromium-args": "--ignore-certificate-errors --allow-http-screen-capture --allow-insecure-localhost --allow-running-insecure-content",
-  "type": "commonjs",
-  "devDependencies": {
-    "nwjs-builder-phoenix": "^1.15.0"
-  },
-  "window": {
-    "position": "center",
-    "min_width": 640,
-    "min_height": 480,
-    "icon": "tray.png",
-    "width": 1066,
-    "height": 600,
-    "always_on_top": false,
-    "resizable": true 
-  },
-  "scripts": {
-    "dev": "/Users/mac/nwjs/nwjs.app/Contents/MacOS/nwjs .",
-    "dist": "mkdir -p ./out && tar zcvf ./out/mbwebphone.tgz index.html config.html favicon.ico *.js *.svg *.css *.ico *.png key/* && build --tasks mac-x64,win-x64 .",    
-    "start": "run --x64 .",
-    "dmg": "hdiutil create -volname 'MBWebPhone' -srcfolder 'out/mbwebphone 1.2.0 mac x64/MBWebPhone.app' -ov -format UDZO './out/MBWebPhone.dmg'"
-  },
-  "author": "meineson",
+  "description": "mbwebphone",
   "license": "MIT",
-  "build": {
-    "appId": "mbwebphone.cn.mbstudio",
-    "nwVersion": "0.101.2",
-    "ffmpegIntegration": true,
-    "packed": true,
-    "output": "./out",
-    "files": [
-      "**/*"
-    ],
-    "targets": [
-      "zip",
-      "nsis7z"
-    ],
-    "outputPattern": "${NAME} ${VERSION} ${PLATFORM} ${ARCH}",
-    "win": {
-      "productName": "MBWebPhone",
-      "companyName": "MBSTUDIO",
-      "copyright": "copyright (C) mbstudio.cn",
-      "icon": "favicon.ico"  
-    },
-    "mac": {
-      "displayName": "MBWebPhone",
-      "copyright": "copyright (C) mbstudio.cn",
-      "icon": "logo.icns",
-      "plistStrings": {
-        "CFBundleIdentifier": "mbwebphone.cn.mbstudio",
-        "CFBundleDocumentTypes": [],
-        "NSCameraUsageDescription": "video call",
-        "NSMicrophoneUsageDescription": "audio call"
-      }
-    },
-    "nsis": {
-      "icon": "favicon.ico",
-      "languages": [
-        "simpChinese"
+  "author": "meineson",
+  "type": "commonjs",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "dmg": "hdiutil create -volname 'MBWebPhone' -srcfolder './out/mbwebphone-darwin-x64/mbwebphone.app' -ov -format UDZO './out/MBWebPhone.dmg'"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^7.8.1",
+    "@electron-forge/maker-deb": "^7.8.1",
+    "@electron-forge/maker-dmg": "^7.8.1",
+    "@electron-forge/maker-rpm": "^7.8.1",
+    "@electron-forge/maker-squirrel": "^7.8.1",
+    "@electron-forge/maker-zip": "^7.8.1",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.8.1",
+    "@electron-forge/plugin-fuses": "^7.8.1",
+    "@electron/fuses": "^1.8.0",
+    "electron": "^37.2.1"
+  },
+  "dependencies": {
+    "electron-squirrel-startup": "^1.0.1"
+  },
+  "config": {
+    "forge": {
+      "makers": [
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {
+            "options": {
+              "maintainer": "meineson",
+              "homepage": "https://mbstudio.cn"
+            }
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": ["darwin", "win"], 
+          "config": {
+          }
+        },
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "authors": "meineson",
+            "description": "mbwebphone"
+          }
+        }
       ]
+    }
+  },
+  "mac":{
+    "extendInfo": {
+      "hardenedRuntime": true,
+      "entitlements": "entitlements.mac.plist",
+      "entitlementsInherit": "entitlements.mac.plist",
+      "NSMicrophoneUsageDescription": "需要麦克风进行语音通话。",
+      "NSCameraUsageDescription": "需要摄像头进行视频通话。",
+      "NSScreenCaptureUsageDescription": "需要录制权限进行桌面分享。",
+      "com.apple.security.device.audio-input": true,
+      "com.apple.security.device.camera": true
     }
   }
 }

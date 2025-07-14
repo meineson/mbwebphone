@@ -394,9 +394,8 @@ function getLocalStream(videocall, setStream, failedCb){
       audio: {
         suppressLocalAudioPlayback: true,
       },
-      
       systemAudio: "include",
-      selfBrowserSurface: "include",
+      selfBrowserSurface: "exclude",
       surfaceSwitching: "include",
       monitorTypeSurfaces: "include",
       preferCurrentTab: false,
