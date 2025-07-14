@@ -292,7 +292,7 @@ function showRemoteStreams(callConn) {
     var tracks = remotestream.getVideoTracks();
     if(tracks.length == 0 || tracks[0].muted){
       //remote audio only
-      vDiv.style.backgroundImage = 'url(mic.svg)';
+      vDiv.style.backgroundImage = 'url(img/mic.svg)';
       vDiv.style.backgroundRepeat = 'no-repeat';
       vDiv.style.backgroundPosition = 'center';
     }
@@ -486,14 +486,14 @@ function callOrAnswer(videocall = true){
 
 //ui click cb
 vcallBtn.addEventListener('click', function(){
-  vDiv.style.backgroundImage = 'url(cam.svg)';
+  vDiv.style.backgroundImage = 'url(img/cam.svg)';
   vDiv.style.backgroundRepeat = 'no-repeat';
   vDiv.style.backgroundPosition = 'center';
   callOrAnswer(true);
 })
 
 callBtn.addEventListener('click', function(){   
-  vDiv.style.backgroundImage = 'url(mic.svg)';
+  vDiv.style.backgroundImage = 'url(img/mic.svg)';
   vDiv.style.backgroundRepeat = 'no-repeat';
   vDiv.style.backgroundPosition = 'center';
   callOrAnswer(false);  
@@ -563,7 +563,7 @@ camBtn.onclick = function(){
     camBtn.style.filter = "";
   }else{
     callSession.mute({video: true});
-    lvDiv.style.backgroundImage = 'url(mic.svg)';
+    lvDiv.style.backgroundImage = 'url(img/mic.svg)';
     camBtn.style.filter = "grayscale(100%)";
   }
 }
