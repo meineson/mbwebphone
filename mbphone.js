@@ -26,9 +26,8 @@ const views = {
   'remoteView': document.getElementById('remote-video')
 };
 
-const vDiv = document.getElementById('vdiv');
+const vDiv = document.getElementById('vdiv');;
 const lvDiv = document.getElementById('lvdiv');
-const vCallCheck = document.getElementById('vcallcheck');
 const eMsgCheck = document.getElementById('eMsg');
 const calleeInput = document.getElementById("callee");
 const callBtn = document.getElementById('call');
@@ -212,6 +211,7 @@ function uaStart(){
           typeof e.candidate.type === "string" && 
           ["srflx", "rely"].includes(e.candidate.type))
         e.ready();
+      console.log("icecandidate:", e);
     });
 
     callSession.on('ended', clearCall);
@@ -227,9 +227,11 @@ function uaStart(){
         console.log('peerconnection:', data.peerconnection);
         data.peerconnection.onconnectionstatechange = (ev) => {
           switch (data.peerconnection.connectionState) {
-            case "connected":
-              lvDiv.style.display = "flex";
+            case "connected":              
               views.selfView.srcObject = callSession.connection.getLocalStreams()[0];
+              if(views.selfView.srcObject.getVideoTracks().length > 0){
+                lvDiv.style.display = "flex";
+              }
               console.log(callSession.connection.getLocalStreams());
               break;
 
@@ -242,6 +244,8 @@ function uaStart(){
       });
 
       var callex = callReq.from._uri._user;
+      //show incoming call video answer btn?
+      vAnsBtn.hidden = callReq.body.search("m=video")?false:true;
       setupCall(true, callex, "来电");
       
       try{
@@ -280,7 +284,16 @@ function showRemoteStreams(callConn) {
   //https://developer.mozilla.org/zh-CN/docs/Web/API/RTCPeerConnection/track_event
   callConn.ontrack = function(e){
     console.log("remote streams", e.streams);
-    views.remoteView.srcObject = e.streams[0];
+    var remotestream = e.streams[0];
+    views.remoteView.srcObject = remotestream;
+
+    var tracks = remotestream.getVideoTracks();
+    if(tracks.length == 0 || tracks[0].muted){
+      //remote audio only
+      vDiv.style.backgroundImage = 'url(mic.svg)';
+      vDiv.style.backgroundRepeat = 'no-repeat';
+      vDiv.style.backgroundPosition = 'center';
+    }
   }
 }
 
@@ -340,7 +353,7 @@ var callOptions = {
   sessionTimersExpires: 120  //freeswitch过短会呼叫失败
 };
 
-function getLocalStream(setStream, failedCb){
+function getLocalStream(videocall, setStream, failedCb){
   if(!navigator.mediaDevices){
     alert("浏览器无法打开音视频设备，请以https://或file://方式访问。");
     infoLb.innerText = '无法打开设备，无法呼叫';
@@ -368,7 +381,7 @@ function getLocalStream(setStream, failedCb){
   // });  
 
   var getVideo = false;
-  if(vCallCheck.checked){
+  if(videocall){
     getVideo = videoConstraints;
   }
   console.log("video constraints:", getVideo);
@@ -427,10 +440,11 @@ function doReg(){
 }
 
 function callOrAnswer(videocall = true){
-  vCallCheck.checked = videocall;
-
   if(callSession && callSession.direction == 'incoming'){      
-    getLocalStream(function(localStream){
+    getLocalStream(videocall, function(localStream){
+      lvDiv.style.display = videocall?"flex":"none";
+      views.selfView.srcObject = localStream; 
+
       answerOptions.mediaStream = localStream;
       callSession.answer(answerOptions);  //using default device to answer
       console.log("answer option:", answerOptions);
@@ -447,8 +461,8 @@ function callOrAnswer(videocall = true){
     lastCallee = calleeInput.value.trim();
     if(lastCallee.length < 1) return;
     
-    getLocalStream(function(localStream){
-      lvDiv.style.display = "flex";
+    getLocalStream(videocall, function(localStream){
+      lvDiv.style.display = videocall?"flex":"none";
       views.selfView.srcObject = localStream; 
 
       callOptions.mediaStream = localStream;  //U can choose different device to callout
@@ -466,16 +480,16 @@ function callOrAnswer(videocall = true){
 
 //ui click cb
 vcallBtn.addEventListener('click', function(){
-  document.getElementById('vdiv').style.backgroundImage = 'url(cam.svg)';
-  document.getElementById('vdiv').style.backgroundRepeat = 'no-repeat';
-  document.getElementById('vdiv').style.backgroundPosition = 'center';
+  vDiv.style.backgroundImage = 'url(cam.svg)';
+  vDiv.style.backgroundRepeat = 'no-repeat';
+  vDiv.style.backgroundPosition = 'center';
   callOrAnswer(true);
 })
 
 callBtn.addEventListener('click', function(){   
-  document.getElementById('vdiv').style.backgroundImage = 'url(mic.svg)';
-  document.getElementById('vdiv').style.backgroundRepeat = 'no-repeat';
-  document.getElementById('vdiv').style.backgroundPosition = 'center';
+  vDiv.style.backgroundImage = 'url(mic.svg)';
+  vDiv.style.backgroundRepeat = 'no-repeat';
+  vDiv.style.backgroundPosition = 'center';
   callOrAnswer(false);  
 });
 
@@ -521,16 +535,6 @@ hangBtn.addEventListener('click', function(){
 rejectBtn.onclick = function(){
   hangBtn.click();
 };
-
-vCallCheck.addEventListener('change', function(e){
-  // if(vCallCheck.checked){
-  //   callOptions.mediaConstraints.video = videoConstraints;
-  //   answerOptions.mediaConstraints.video = videoConstraints;
-  // }else{
-  //   callOptions.mediaConstraints.video = false;
-  //   answerOptions.mediaConstraints.video = false;
-  // }
-});
 
 eMsgCheck.addEventListener('change', function(e){
   msgInput.hidden = !eMsgCheck.checked;
