@@ -1,4 +1,4 @@
-const https = require('https');
+const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const PORT = 3000;
@@ -8,7 +8,7 @@ const options = {
 	cert: fs.readFileSync('./key/certificate.pem')
 };
 
-const server = https.createServer(options, (req, res) => {
+const server = http.createServer(options, (req, res) => {
   //allow local file://app.html access        
   const filePath = path.join(__dirname, './', req.url === '/' ? 'index.html' : req.url);
   const fileExt = path.extname(filePath);
@@ -54,5 +54,5 @@ const server = https.createServer(options, (req, res) => {
 });
   
 server.listen(PORT, () => {
-  console.log(`Server running at https://localhost:${PORT}/`);
+  console.log(`Server running at http://localhost:${PORT}/`);
 });    

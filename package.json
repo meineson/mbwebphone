@@ -15,7 +15,7 @@
     "mac": "electron-builder",
     "win": "electron-builder -w portable",
     "lin": "electron-builder -l deb",
-    "web": "mkdir -p ./dist && tar zcvf ./dist/mbwebphone.tgz *.html *.js *.css *.ico *.png key/* img/*"
+    "web": "mkdir -p ./dist && tar zcvf ./dist/mbwebphone.tgz *.html *.js *.css *.ico *.png img/*"
   },
   "devDependencies": {
     "electron": "^37.2.1",
