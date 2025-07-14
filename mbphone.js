@@ -36,6 +36,8 @@ const hangBtn = document.getElementById('hangup');
 const rejectBtn = document.getElementById('reject');
 const vAnsBtn = document.getElementById('vcallanswer');
 const aAnsBtn = document.getElementById('callanswer');
+const micBtn = document.getElementById('micctrl');
+const camBtn = document.getElementById('camctrl');
 const infoLb = document.getElementById('status');
 const regStat = document.getElementById('regstat');
 const alertMsg = document.getElementById('alertmsg');
@@ -245,7 +247,7 @@ function uaStart(){
 
       var callex = callReq.from._uri._user;
       //show incoming call video answer btn?
-      vAnsBtn.hidden = callReq.body.search("m=video")?false:true;
+      vAnsBtn.hidden = (callReq.body.search("m=video")>0)?false:true;
       setupCall(true, callex, "来电");
       
       try{
@@ -440,9 +442,13 @@ function doReg(){
 }
 
 function callOrAnswer(videocall = true){
+  camBtn.style.filter = "";
+  micBtn.style.filter = "";
+
   if(callSession && callSession.direction == 'incoming'){      
     getLocalStream(videocall, function(localStream){
       lvDiv.style.display = videocall?"flex":"none";
+      camBtn.hidden = videocall?false:true;
       views.selfView.srcObject = localStream; 
 
       answerOptions.mediaStream = localStream;
@@ -463,6 +469,7 @@ function callOrAnswer(videocall = true){
     
     getLocalStream(videocall, function(localStream){
       lvDiv.style.display = videocall?"flex":"none";
+      camBtn.hidden = videocall?false:true;
       views.selfView.srcObject = localStream; 
 
       callOptions.mediaStream = localStream;  //U can choose different device to callout
@@ -518,6 +525,7 @@ msgInput.addEventListener('keydown', function(event) {
     var callee = calleeInput.value.trim();
     var newmsg = msgInput.value.trim();
     lastCallee = callee;
+    if(lastCallee.length < 1) return;
 
     if(newmsg.length > 0){
       var uri  = new JsSIP.URI('sip', lastCallee, server.domain, server.sipPort);
@@ -536,6 +544,31 @@ rejectBtn.onclick = function(){
   hangBtn.click();
 };
 
+micBtn.onclick = function(){
+  var muteS = callSession?.isMuted();
+  console.log(muteS);
+  if(muteS.audio){
+    callSession.unmute({audio: true});
+    micBtn.style.filter = "";
+  }else{
+    callSession.mute({audio: true});
+    micBtn.style.filter = "grayscale(100%)";
+  }
+}
+
+camBtn.onclick = function(){
+  var muteS = callSession?.isMuted();
+  console.log(muteS);
+  if(muteS.video){
+    callSession.unmute({video: true});
+    camBtn.style.filter = "";
+  }else{
+    callSession.mute({video: true});
+    lvDiv.style.backgroundImage = 'url(mic.svg)';
+    camBtn.style.filter = "grayscale(100%)";
+  }
+}
+
 eMsgCheck.addEventListener('change', function(e){
   msgInput.hidden = !eMsgCheck.checked;
   msgBox.hidden = !eMsgCheck.checked;
@@ -543,7 +576,6 @@ eMsgCheck.addEventListener('change', function(e){
 
 window.addEventListener("load", function(e){
   readConfig();
-  calleeInput.value = user.lastCallee?user.lastCallee:"";
   if(server.domain.length > 3){
     doReg();
   }
