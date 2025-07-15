@@ -2,7 +2,7 @@ online web demo(old version): https://mbstudio.cn/mbwebphone .
 
 ![all in one](https://private-user-images.githubusercontent.com/47816990/465971441-4ee2a68c-6a0f-49f7-be7a-fa50947989fb.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NTI1NjMwMzEsIm5iZiI6MTc1MjU2MjczMSwicGF0aCI6Ii80NzgxNjk5MC80NjU5NzE0NDEtNGVlMmE2OGMtNmEwZi00OWY3LWJlN2EtZmE1MDk0Nzk4OWZiLnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNTA3MTUlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjUwNzE1VDA2NTg1MVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTI0YjZlODFhNzJiMmFiY2M1NzA3MTQ1NThmZDFlMDgzNjYxOTAyYWZlZGRkOWY5OGJkODcxZGQyMzRiNzQwOTkmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.ELkBhx_H_DbeL5rUu-i2EMU8zEkfCMikfoAxNzJAseU)
 
-using freeswitch docker:
+__freeswitch server(docker):__
 ```
 #docker pull safarov/freeswitch
 #docker run -d --name fs -v  ~/fscfg:/etc/freeswitch --net=host safarov/freeswitch
@@ -38,8 +38,6 @@ fs>sofia global siptrace on   #sip message debug
 ```
 
 __WEB release__
-![web release](https://www.mbstudio.cn/images/2025-07-07-16-22-36.png)
-
 `npm run web`
 
 send dist/mbwebphone.tgz to users:
@@ -63,7 +61,6 @@ package mbwebphone as an Windows/Linux/MacOS app|exe:
 ```
 
 - windows exe
-![windows release](https://mbstudio.cn/images/2025-07-07-16-45-01.png)
 ```
 #npm run win   #make windows portable exe
 #npx electron-builder -w nsis   #make windows installer exe
@@ -71,21 +68,18 @@ package mbwebphone as an Windows/Linux/MacOS app|exe:
 send dist/mbwebphone Setup 1.3.1.exe or dist/mbwebphone 1.3.1.exe to users.
 
 - macos dmg
-![macos release](https://www.mbstudio.cn/images/2025-07-07-16-22-28.png)
 ```
 #npm run mac
 ```
 send dist/mbwebphone-1.3.1.dmg to users.
 
 -  linux deb
-
 ```
 npm run lin
 ```
 send dist/mbwebphone_1.3.1_amd64.deb to users.
 
 - other OS or CPU?
-
 ```
 npx electron-builder -w nsis -l rpm -m dmg --arm64 --ia32
 ```
