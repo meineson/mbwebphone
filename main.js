@@ -2,9 +2,6 @@ const { app, Tray, Menu, nativeImage, desktopCapturer, session, BrowserWindow, T
 const { systemPreferences, ipcMain } = require('electron')
 const path = require('node:path')
 
-// const microphone = systemPreferences.askForMediaAccess('microphone');
-// const camera = systemPreferences.askForMediaAccess('camera');
-
 async function checkAndApplyDeviceAccessPrivilege() {
   const cameraPrivilege = systemPreferences.getMediaAccessStatus('camera');
   console.log(
@@ -40,7 +37,8 @@ const createWindow = () => {
     height: 600,
     autoHideMenuBar: true,
     webPreferences: {
-      webSecurity: false, 
+      // allowRunningInsecureContent: true,
+      // webSecurity: false, 
       nodeIntegration: true,
       enableRemoteModule: true, 
       contextIsolation: true, 
@@ -55,7 +53,6 @@ const createWindow = () => {
   });
 
   win.loadFile('index.html')
-  Menu.setApplicationMenu(Menu.buildFromTemplate([]))
   return win;
 }
 
@@ -66,8 +63,14 @@ app.whenReady().then(() => {
 
   const icon = nativeImage.createFromPath(path.join(__dirname, 'img/tray.png'))
   var tray = new Tray(icon)
-
-  const contextMenu = Menu.buildFromTemplate([
+  const menuTabs = [
+    {
+        label:'关于',
+        accelerator: "CommandOrControl+A",
+        click:()=>{
+          app.showAboutPanel();
+        }
+    },
     { label: '显示', type: 'normal' , accelerator: "CommandOrControl+D",
       click: ()=>{
         mainWin.show();
@@ -75,7 +78,7 @@ app.whenReady().then(() => {
     },
     { label: '隐藏', type: 'normal' , accelerator: "CommandOrControl+H",
       click: ()=>{
-        mainWin.hide();
+        mainWin.minimize(); //or hide
       }
     },
     { label: '重启', type: 'normal' , accelerator: "CommandOrControl+R",
@@ -89,26 +92,24 @@ app.whenReady().then(() => {
         mainWin.destroy();
         app.quit();
     } }
-  ])
+  ];
+  const trayMenu = menuTabs;
+  const sysMenu = [{
+    label: 'MBWebPhone',
+    submenu:menuTabs
+  }];
+  tray.setContextMenu(Menu.buildFromTemplate(trayMenu));
+  // tray.setToolTip('MBWebPhone')
+  // tray.setTitle('MBWebPhone')
+  Menu.setApplicationMenu(Menu.buildFromTemplate(sysMenu));
 
-  tray.setContextMenu(contextMenu)  
-  tray.setToolTip('MBWebPhone 1.2.0')
-  tray.setTitle('MBWebPhone')
-
-  mainWin.setTouchBar(new TouchBar([{
-    label: "MBWebPhone",    
-    icon: icon,
-    click: ()=>{
-      mainWin.show();
-    }
-  }]));
-
-  
   ipcMain.handle('showme', () => {
     console.log("need show main window");
     mainWin.show();
   })
 })
+
+app.commandLine.appendSwitch('ignore-certificate-errors');
 
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {

@@ -37,52 +37,59 @@ fs>sofia global siptrace on   #sip message debug
 
 __WEB release__
 ![web release](https://www.mbstudio.cn/images/2025-07-07-16-22-36.png)
-`#tar zcvf ./out/mbwebphone.tgz index.html jssip-3.10.0.min.js mbphone.js mbweb.css miniweb.js`
-
-send mbwebphone.tgz to users:
+`npm run web`
+send dist/mbwebphone.tgz to users:
 ```
 #tar zxvf mbwebphone.tgz
 #node miniweb.js
 ```
-visit https://localhost:3000 in chrome,edge,safari.
-> old release use http://localhost:3000
+visit http://localhost:3000 in chrome,edge,safari.
+> always use ws://172.21.2.210:5066 in localhost.
 
 __Windows/Linux/MacOS release__
 
 package mbwebphone as an Windows/Linux/MacOS app|exe:
 ```
-#npm install nwjs-builder-phoenix --save-dev
-#npm run dev
-#npm run dist
+#npm install yarn
+#yarn config set electron_mirror "https://npmmirror.com/mirrors/electron/"
+#yarn add electron-builder -g --verbose
+
+#npm run start  #dev
+#npm run dist   #make all release
 ```
 
 - windows 
 ![windows release](https://mbstudio.cn/images/2025-07-07-16-45-01.png)
-*macos build need wine to make setup exe*
 ```
-./out/MBWebPhone APP 1.0.1 win x64-Setup.exe
-./out/MBWebPhone APP 1.0.1 win x86-Setup.exe
-or run ./out/MBWebPhone APP 1.0.1 win [x64|x86]/nw.exe
+#npm run win   #make windows portable exe
+#npx electron-builder -w nsis   #make windows installer exe
 ```
+send dist/mbwebphone Setup 1.3.1.exe or dist/mbwebphone Setup 1.3.1.exe to users.
 
 - macos dmg
 ![macos release](https://www.mbstudio.cn/images/2025-07-07-16-22-28.png)
-./out/MBWebPhone APP 1.0.1 mac x64.zip
-or
 ```
-#hdiutil create -volname "MBWebPhone" \
-  -srcfolder "./out/MBWebPhone APP 1.0.1 mac x64/MBWebPhone.app" \
-  -ov -format UDZO "./out/MBWebPhone.dmg"
-./out/MBWebPhone v0.1.1.dmg  
+#npm run mac
 ```
+send dist/mbwebphone-1.3.1.dmg to users.
 
 -  linux
 
 ```
-./out/MBWebPhone APP 1.0.1 linux x64.zip
-./out/MBWebPhone APP 1.0.1 linux x86.zip
-or run ./out/MBWebPhone APP 1.0.1 linux [x64|x86]/MBWebPhone APP
+npm run lin
 ```
+send dist/mbwebphone_1.3.1_amd64.deb to users.
+
+- other OS or CPU?
+
+```
+npx electron-builder -w nsis -l rpm -m dmg --arm64 --ia32
+```
+how to build rpm, msi, pkg, snap, etc.. 
+see: 
+https://www.electron.build/mac
+https://www.electron.build/win
+https://www.electron.build/linux
 
 __Freeswitch DEMO__
 
@@ -90,4 +97,4 @@ __Freeswitch DEMO__
 - call `9196` to start audio/video loopback echo test.
 - call `3500-3599` to start video conference (up to 100 rooms).
 
-all these defined in fscfg/dialplan/default.xml.
+all these defined on sip server in fscfg/dialplan/default.xml.
