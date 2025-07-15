@@ -23,6 +23,13 @@
       flex-direction:column;
       align-items:center;
     }
+    .alert{
+      color: red;
+    }
+    .btn{
+      font-weight: bolder;
+      font-size: larger;
+    }
   </style>
 </head>
 
@@ -46,14 +53,14 @@
     </div>
     <div>
       </br>
-      <label style="color: red;" id="alert"></label></br>
-      <button id="saveconfig" style="font-weight: bolder;font-size: larger;">💾 保存</button>
-      <button id="cancel" style="font-weight: bolder;font-size: larger;">✖️ 取消</button>
+      <label class="alert" id="alert"></label></br>
+      <button id="saveconfig" class="btn">💾 保存</button>
+      <button id="cancel" class="btn">✖️ 取消</button>
     </div>
   </div>
 
   <script>
-    var deviceConfig = {audioin:'default', audioout:'default', videoin:'desktop'};
+    var deviceConfig = {audioin:'default', audioout:'default', videoin:'user'};
     var server = {
       domain: '',
       sipPort: 8060,
@@ -114,7 +121,7 @@
       infoLb.innerText = '无法打开设备，无法呼叫';
     }
 
-    navigator.mediaDevices.getUserMedia({audio: {deviceId: undefined}, video: {deviceId: undefined}})
+    navigator.mediaDevices.getUserMedia({audio: {deviceId: undefined}})
     .then(stream => {
       navigator.mediaDevices?.enumerateDevices()
       .then(devices => {
@@ -124,14 +131,13 @@
             document.getElementById("aidev").innerHTML += buildDeviceOption(device);
           }else if(device.kind === 'audiooutput'){
             document.getElementById("aodev").innerHTML += buildDeviceOption(device);
-          }else if(device.kind === 'videoinput'){
-            document.getElementById("videv").innerHTML += buildDeviceOption(device);
           }
-        });
+        });  
         
-        //add desktop share video input
         document.getElementById("videv").innerHTML += 
-          buildDeviceOption({kind:"videoinput", label:"桌面分享", deviceId:"desktop"})      
+          buildDeviceOption({kind:"videoinput", label:"前置摄像头", deviceId:"user"})      
+        document.getElementById("videv").innerHTML += 
+          buildDeviceOption({kind:"videoinput", label:"后置摄像头", deviceId:"environment"})      
       }).then(()=>{
         //update ui select
         try{

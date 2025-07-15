@@ -57,10 +57,10 @@ span {
   background: black;
   position: absolute;
   border: 1px solid lightgrey;
-  height: 200px;
-  width: 356px;
-  bottom: 10px;
-  right: 10px;
+  height: 230px;
+  width: 130px;
+  bottom: 5px;
+  right: 5px;
   z-index: 2;
   /* transform: scaleX(-1); */
   background-image: url("img/no-video.png");

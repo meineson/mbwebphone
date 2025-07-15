@@ -63,11 +63,11 @@ var callTimer = null;
 var deviceConfig = {audioin:'default', audioout:'default', videoin:'default'};
 
 const videoConstraints = {
-  deviceId: deviceConfig.videoin,
+  // deviceId: deviceConfig.videoin,  android only use front, back camera
   width: { ideal: 1280 },
   height: { ideal: 720 },
   frameRate: { ideal: 30 },
-  facingMode: "user" //"user, environment"
+  // facingMode: deviceConfig.videoin //"user, environment"
   // facingMode: { exact: "user" }
 };
 
@@ -82,7 +82,8 @@ function readConfig(){
   }
   if(localStorage.getItem('devices')){
     deviceConfig = JSON.parse(localStorage.getItem('devices'))
-    videoConstraints.deviceId = deviceConfig.videoin; //need update
+    // videoConstraints.deviceId = deviceConfig.videoin; //need update
+    videoConstraints.facingMode = deviceConfig.videoin; //need update
   }  
   console.log("config readed:", user, server, deviceConfig);  
 }
@@ -374,12 +375,12 @@ function getLocalStream(videocall, setStream, failedCb){
     return;
   }
 
-  navigator.permissions.query({ name: 'microphone' }).then(function(permissionStatus){
-    if(permissionStatus.state == "denied"){
-      alert("没有麦克风设备或未授权访问权限，通话异常。");
-    }
-    console.log(permissionStatus);
-  });
+  // navigator.permissions.query({ name: 'microphone' }).then(function(permissionStatus){
+  //   if(permissionStatus.state == "denied"){
+  //     alert("没有麦克风设备或未授权访问权限，通话异常。");
+  //   }
+  //   console.log(permissionStatus);
+  // });
   // navigator.permissions.query({ name: 'camera' }).then(function(permissionStatus){
   //   if(permissionStatus.state == "denied"){
   //     alert("未授权摄像头访问权限，视频通话异常。")
