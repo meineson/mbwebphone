@@ -251,12 +251,18 @@ function uaStart(){
       setupCall(true, callex, "来电");
       
       try{
+        window.phone.showMe();
+      }catch(e){
+        console.log("not in electron", e);
+      }
+
+      try{
         const nwWin = nw?.Window?.get();
         //display nwjs window
         nwWin.show(true);
         nwWin.requestAttention(2);
       }catch(e){
-        // console.log(e);
+        console.log("not in nwjs", e);
       }
     }
   });
