@@ -38,14 +38,16 @@ fs>sofia global siptrace on   #sip message debug
 ```
 
 __WEB release__
-`npm run web`
 
+```
+#npm run web
+```
 send dist/mbwebphone.tgz to users:
 ```
 #tar zxvf mbwebphone.tgz
 #node miniweb.js
 ```
-visit http://localhost:3000 in chrome,edge,safari.
+visit http://localhost:3000 in chrome, edge, safari.
 > always use ws://172.21.2.210:5066 in localhost.
 
 __Windows/Linux/MacOS release__
@@ -61,6 +63,7 @@ package mbwebphone as an Windows/Linux/MacOS app|exe:
 ```
 
 - windows exe
+
 ```
 #npm run win   #make windows portable exe
 #npx electron-builder -w nsis   #make windows installer exe
@@ -68,18 +71,21 @@ package mbwebphone as an Windows/Linux/MacOS app|exe:
 send dist/mbwebphone Setup 1.3.1.exe or dist/mbwebphone 1.3.1.exe to users.
 
 - macos dmg
+
 ```
 #npm run mac
 ```
 send dist/mbwebphone-1.3.1.dmg to users.
 
 -  linux deb
+
 ```
 npm run lin
 ```
 send dist/mbwebphone_1.3.1_amd64.deb to users.
 
 - other OS or CPU?
+
 ```
 npx electron-builder -w nsis -l rpm -m dmg --arm64 --ia32
 ```
