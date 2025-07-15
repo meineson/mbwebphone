@@ -106,7 +106,11 @@ app.whenReady().then(() => {
   ipcMain.handle('showme', () => {
     console.log("need show main window");
     mainWin.show();
-  })
+  });
+  ipcMain.handle("showver", () => {
+    console.log("need show version");
+    app.showAboutPanel();
+  });
 })
 
 app.commandLine.appendSwitch('ignore-certificate-errors');

@@ -18,7 +18,12 @@ var lastCallee = '';
 
 const VERSION = "MBWebPhone V1.3.1"
 function showVersion(){
-  alert(VERSION);
+  //show electron about or failed to js alert
+  try{
+    window.phone.showVer();
+  }catch(e){
+    alert(VERSION);
+  }    
 }
 
 const views = {

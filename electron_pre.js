@@ -1,4 +1,4 @@
-const { app, contextBridge, ipcRenderer } = require('electron')
+const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld('phone', {
   node: () => process.versions.node,
@@ -7,5 +7,9 @@ contextBridge.exposeInMainWorld('phone', {
   showMe: () => {
     ipcRenderer.invoke('showme');
     console.log("show main window");
+  },
+  showVer: () => {
+    ipcRenderer.invoke('showver');
+    console.log("show version");
   }
 })
