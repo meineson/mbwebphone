@@ -50,49 +50,33 @@ send dist/mbwebphone.tgz to users:
 visit http://localhost:3000 in chrome, edge, safari.
 > always use ws://172.21.2.210:5066 in localhost.
 
-__Windows/Linux/MacOS release__
+__Android release (Tauri)__
 
-package mbwebphone as an Windows/Linux/MacOS app|exe:
+package mbwebphone as android apk:
 ```
-#npm install yarn
-#yarn config set electron_mirror "https://npmmirror.com/mirrors/electron/"
-#yarn add electron-builder -g --verbose
-
-#npm run start  #dev
-#npm run dist   #make all release
+#curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
+#yarn
+#yarn tauri dev
+#yarn tauri build
 ```
 
-- windows exe
+Download and install Android Studio from the Android Developers website https://developer.android.com/studio
+
+Use the SDK Manager in Android Studio to install the following:
+- [x] Android SDK Platform
+- [x] Android SDK Platform-Tools
+- [x] NDK (Side by side)
+- [x] Android SDK Build-Tools
+- [x] Android SDK Command-line Tools
 
 ```
-#npm run win   #make windows portable exe
-#npx electron-builder -w nsis   #make windows installer exe
+#export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
+#export ANDROID_HOME="$HOME/Library/Android/sdk"
+#export NDK_HOME="$ANDROID_HOME/ndk/$(ls -1 $ANDROID_HOME/ndk)"
+#rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
+#yarn tauri android dev 
+#yarn tauri android build --apk
 ```
-send dist/mbwebphone Setup 1.3.1.exe or dist/mbwebphone 1.3.1.exe to users.
-
-- macos dmg
-
-```
-#npm run mac
-```
-send dist/mbwebphone-1.3.1.dmg to users.
-
--  linux deb
-
-```
-npm run lin
-```
-send dist/mbwebphone_1.3.1_amd64.deb to users.
-
-- other OS or CPU?
-
-```
-npx electron-builder -w nsis -l rpm -m dmg --arm64 --ia32
-```
-how to build rpm, msi, pkg, snap, etc., see: 
-https://www.electron.build/mac
-https://www.electron.build/win
-https://www.electron.build/linux
 
 __Freeswitch DEMO__
 

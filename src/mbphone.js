@@ -67,6 +67,7 @@ const videoConstraints = {
   width: { ideal: 1280 },
   height: { ideal: 720 },
   frameRate: { ideal: 30 },
+  facingMode: "user" //"user, environment"
   // facingMode: { exact: "user" }
 };
 
@@ -156,7 +157,7 @@ function uaStart(){
 
   //server state cb
   myPhone.on('connected', function(e){ 
-    infoLb.innerText = "服务器已连接";
+    infoLb.innerText = "连接";
     console.log('connected');
   });
   myPhone.on('disconnected', function(e){ 

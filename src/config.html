@@ -110,11 +110,11 @@
     }
 
     if(!navigator.mediaDevices){
-      alert("浏览器无法打开音视频设备，请以https://或file://方式访问。");
+      alert("无法打开音视频设备。");
       infoLb.innerText = '无法打开设备，无法呼叫';
     }
 
-    navigator.mediaDevices.getUserMedia({audio:true, video:false})
+    navigator.mediaDevices.getUserMedia({audio: {deviceId: undefined}})
     .then(stream => {
       navigator.mediaDevices?.enumerateDevices()
       .then(devices => {
@@ -184,11 +184,11 @@
 
       saveConfig();
       document.getElementById("alert").innerHTML = "设备选择已保存。";
-      window.location.href = "index.html";  //history goback maybe not reload
+      window.location.replace("index.html");  //history goback maybe not reload      
     })
 
     document.getElementById("cancel").addEventListener('click', function(){
-      window.location.href = "index.html";
+      window.location.replace("index.html"); 
     });
   </script>
 </body>
