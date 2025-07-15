@@ -99,9 +99,9 @@
     function buildDeviceOption(device){
       var radioElm;
       var rid = device.deviceId;
-      if(device.deviceId === ""){       
+      if(device.deviceId === "" || device.label === ""){       
         radioElm = `<input type='radio' id='${device.kind}-default' name='${device.kind}' value='default'>`;
-        radioElm += `<label for='${device.kind}-default'>默认设备（系统隐私保护）</label></input></br>`;
+        radioElm += `<label for='${device.kind}-default'>默认设备</label></input></br>`;
       }else{
         radioElm = `<input type='radio' id='${device.kind}-${rid}' name='${device.kind}' value='${device.deviceId}'>`;
         radioElm += `<label for='${device.kind}-${rid}'>${device.label}</label></input></br>`;
@@ -114,7 +114,7 @@
       infoLb.innerText = '无法打开设备，无法呼叫';
     }
 
-    navigator.mediaDevices.getUserMedia({audio: {deviceId: undefined}})
+    navigator.mediaDevices.getUserMedia({audio: {deviceId: undefined}, video: {deviceId: undefined}})
     .then(stream => {
       navigator.mediaDevices?.enumerateDevices()
       .then(devices => {
