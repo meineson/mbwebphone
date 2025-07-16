@@ -312,7 +312,7 @@ function showRemoteStreams(callConn) {
 
 function timeFromNow() {
   const now = new Date();
-  const start = new Date(callSession.start_time);
+  const start = new Date(callSession?.start_time);
   const diff = (now - start)/1000;
   
   return Math.floor(diff / 3600).toString().padStart(2, '0') + ":" +
