@@ -590,6 +590,10 @@ eMsgCheck.addEventListener('change', function(e){
   msgBox.hidden = !eMsgCheck.checked;
 })
 
+document.getElementById("about").addEventListener('click', function(){
+  showVersion();
+})
+
 window.addEventListener("load", function(e){
   readConfig();
   if(server.domain.length > 3){

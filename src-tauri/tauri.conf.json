@@ -12,11 +12,13 @@
       {
         "title": "mbwebphone",
         "width": 1066,
-        "height": 600
+        "height": 600,
+        "alwaysOnTop": true,
+        "useHttpsScheme": false
       }
-    ],    
+    ],   
     "security": {
-      "csp": "default-src 'self' 'unsafe-inline' blob: data: media:; script-src 'self' 'unsafe-eval'; connect-src *;"
+      "csp": "default-src 'self' 'unsafe-inline' blob: data: media:; script-src 'self' 'unsafe-eval' 'unsafe-hashes' 'unsafe-inline'; connect-src *;"
     }
   },
   "bundle": {
