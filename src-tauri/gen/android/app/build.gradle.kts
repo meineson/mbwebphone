@@ -18,7 +18,7 @@ android {
     compileSdk = 34
     namespace = "cn.mbstudio.meconf"
     defaultConfig {
-        manifestPlaceholders["usesCleartextTraffic"] = "false"
+        manifestPlaceholders["usesCleartextTraffic"] = "true"
         applicationId = "cn.mbstudio.meconf"
         minSdk = 24
         targetSdk = 34
