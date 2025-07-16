@@ -298,7 +298,7 @@ function uaStart(){
 function showRemoteStreams(callConn) {
   //https://developer.mozilla.org/zh-CN/docs/Web/API/RTCPeerConnection/track_event
   callConn.ontrack = function(e){
-    console.log("remote streams", e.streams);
+    console.log("remote streams", e.streams, e.track.kind, e.track.readyState);
     var remotestream = e.streams[0];
     views.remoteView.srcObject = remotestream;
 
@@ -314,7 +314,7 @@ function showRemoteStreams(callConn) {
 
 function timeFromNow() {
   const now = new Date();
-  const start = new Date(callSession.start_time);
+  const start = new Date(callSession?.start_time);
   const diff = (now - start)/1000;
   
   return Math.floor(diff / 3600).toString().padStart(2, '0') + ":" +
@@ -503,6 +503,10 @@ vcallBtn.addEventListener('click', function(){
   vDiv.style.backgroundRepeat = 'no-repeat';
   vDiv.style.backgroundPosition = 'center';
   callOrAnswer(true);
+})
+
+views.remoteView.addEventListener('loadeddata', function(){
+  console.log("remote video can display");
 })
 
 callBtn.addEventListener('click', function(){   

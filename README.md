@@ -19,6 +19,10 @@ __freeswitch server(docker):__
 <param name="ext-rtp-ip" value="$${external_rtp_ip}""/>
 <param name="ext-sip-ip" value="$${external_sip_ip}""/>
 
+#nano dialplan/default.xml  
+<!--<action application="set" data="ringback=${us-ring}"/>--> #183 make video call ring mis
+<action application="ring_ready"/>  #180 ring event only, play ring tone by web app
+
 #nano autoload_configs/switch.conf.xml
 <!-- RTP port range -->
 <param name="rtp-start-port" value="8000"/> #using your fs server udp port range
