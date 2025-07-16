@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "mbwebphone",
+  "productName": "MeConf",
   "version": "0.1.0",
-  "identifier": "cn.mbstudio.mbwebphone",
+  "identifier": "cn.mbstudio.meconf",
   "build": {
     "frontendDist": "../src"
   },
@@ -10,16 +10,16 @@
     "withGlobalTauri": true,
     "windows": [
       {
-        "title": "mbwebphone",
+        "title": "MeConf",
         "width": 1066,
         "height": 600,
         "alwaysOnTop": true,
-        "useHttpsScheme": false
+        "useHttpsScheme": false,
+        "additionalBrowserArgs": "--ignore-certificate-errors"
       }
     ],   
     "security": {
-      "csp": "default-src 'self' 'unsafe-inline' blob: data: media:; script-src 'self' 'unsafe-eval' 'unsafe-hashes' 'unsafe-inline'; connect-src *;"
-    }
+      "csp": "default-src 'self' 'unsafe-inline' blob: data: media:; script-src 'self' 'unsafe-eval' 'unsafe-hashes' 'unsafe-inline'; connect-src *;"    }
   },
   "bundle": {
     "active": true,

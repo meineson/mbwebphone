@@ -46,9 +46,9 @@ __WEB release__
 ```
 #npm run web
 ```
-send dist/mbwebphone.tgz to users:
+send dist/meconf.tgz to users:
 ```
-#tar zxvf mbwebphone.tgz
+#tar zxvf meconf.tgz
 #node miniweb.js
 ```
 visit http://localhost:3000 in chrome, edge, safari.
@@ -56,7 +56,7 @@ visit http://localhost:3000 in chrome, edge, safari.
 
 __Android release (Tauri)__
 
-package mbwebphone as android apk:
+package meconf as android apk:
 ```
 #curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
 #yarn

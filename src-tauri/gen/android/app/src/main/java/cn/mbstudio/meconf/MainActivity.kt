@@ -1,3 +1,3 @@
-package cn.mbstudio.mbwebphone
+package cn.mbstudio.meconf
 
 class MainActivity : TauriActivity()

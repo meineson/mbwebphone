@@ -16,7 +16,7 @@ var user = {
 }
 var lastCallee = '';
 
-const VERSION = "MBWebPhone V1.3.1"
+const VERSION = "MeConf V1.3.1"
 function showVersion(){
   //show electron about or failed to js alert
   try{

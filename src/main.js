@@ -95,12 +95,12 @@ app.whenReady().then(() => {
   ];
   const trayMenu = menuTabs;
   const sysMenu = [{
-    label: 'MBWebPhone',
+    label: 'MeConf',
     submenu:menuTabs
   }];
   tray.setContextMenu(Menu.buildFromTemplate(trayMenu));
-  // tray.setToolTip('MBWebPhone')
-  // tray.setTitle('MBWebPhone')
+  // tray.setToolTip('MeConf')
+  // tray.setTitle('MeConf')
   Menu.setApplicationMenu(Menu.buildFromTemplate(sysMenu));
 
   ipcMain.handle('showme', () => {

@@ -1,4 +1,4 @@
-/src/main/java/cn/mbstudio/mbwebphone/generated
+/src/main/java/cn/mbstudio/meconf/generated
 /src/main/jniLibs/**/*.so
 /src/main/assets/tauri.conf.json
 /tauri.build.gradle.kts
