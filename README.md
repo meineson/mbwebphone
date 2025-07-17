@@ -28,10 +28,14 @@ __freeswitch server(docker):__
 <param name="rtp-start-port" value="8000"/> #using your fs server udp port range
 <param name="rtp-end-port" value="8100"/>
 
+fix 488 error
 #nano autoload_configs/acl.conf.xml 
 <list name="wan.auto" default="allow">
-  <node type="allow" cidr="172.21.0.0/16"/>  #fix coturn 488 error, using your LAN ip range
+  <node type="allow" cidr="172.21.0.0/16"/>  
 </list>   
+or 
+#nano sip_profiles/internal.xml 
+<param name="apply-candidate-acl" value="any_v4.auto"/>
 
 #nano autoload_configs/event_socket.conf.xml  
     <param name="listen-ip" value="0.0.0.0"/>   #fix fs_cli.c:1699 main() Error Connecting []  

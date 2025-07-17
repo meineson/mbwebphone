@@ -105,11 +105,11 @@ var clearCall = function(e){
   infoLb.innerText = "呼叫结束";
 
   try{
-    callSession.terminate();
     infoBox.style.display = "flex";
     callerDiv.style.display = "none";
     calleeDiv.style.display = "flex";
     callctrl.style.display = "none";    
+    callSession.terminate();
     callSession = null;    
   }catch(e){
     callSession = null;  
@@ -210,6 +210,12 @@ function uaStart(){
   //call process cb
   myPhone.on('newRTCSession', function(e){ 
     var callReq = e.request;
+
+    if(callSession){
+      console.log("only support one call now, 486 busy here");
+      e.session.terminate({status_code: 486, reason_phrase:"BUSY"});
+      return;
+    }
 
     console.log('new session:', e.session);
     callSession = e.session;
@@ -370,7 +376,7 @@ var callOptions = {
 
 function getLocalStream(videocall, setStream, failedCb){
   if(!navigator.mediaDevices){
-    alert("浏览器无法打开音视频设备，请以https://或file://方式访问。");
+    alert("无法打开音视频设备。");
     infoLb.innerText = '无法打开设备，无法呼叫';
     return;
   }
