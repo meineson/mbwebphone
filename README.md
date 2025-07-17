@@ -60,7 +60,7 @@ visit http://localhost:3000 in chrome, edge, safari.
 
 __Windows/Linux/MacOS release__
 
-package mbwebphone as an Windows/Linux/MacOS app|exe:
+package MeConf as an Windows/Linux/MacOS app|exe:
 ```
 #npm install yarn
 #yarn config set electron_mirror "https://npmmirror.com/mirrors/electron/"
@@ -76,21 +76,21 @@ package mbwebphone as an Windows/Linux/MacOS app|exe:
 #npm run win   #make windows portable exe
 #npx electron-builder -w nsis   #make windows installer exe
 ```
-send dist/mbwebphone Setup 1.3.1.exe or dist/mbwebphone 1.3.1.exe to users.
+send dist/MeConf Setup 1.3.1.exe or dist/MeConf 1.3.1.exe to users.
 
 - macos dmg
 
 ```
 #npm run mac
 ```
-send dist/mbwebphone-1.3.1.dmg to users.
+send dist/MeConf-1.3.1.dmg to users.
 
 -  linux deb
 
 ```
 npm run lin
 ```
-send dist/mbwebphone_1.3.1_amd64.deb to users.
+send dist/MeConf_1.3.1_amd64.deb to users.
 
 - other OS or CPU?
 
