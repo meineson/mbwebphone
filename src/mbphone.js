@@ -102,7 +102,7 @@ var clearCall = function(e){
   callerDiv.style.display = "none";
   calleeDiv.style.display = "flex";
 
-  infoLb.innerText = "呼叫结束";
+  infoLb.innerText = "挂断 " + e?.cause;
 
   try{
     infoBox.style.display = "flex";
@@ -363,7 +363,7 @@ var callOptions = {
       console.log("get usermedia failed", data);
     },
     'ended':      function(data){ 
-      clearCall();            
+      clearCall(data);            
       console.log("call ended", data);
     }
   },
@@ -494,7 +494,7 @@ function callOrAnswer(videocall = true){
       console.log(callOptions);
 
       var uri  = new JsSIP.URI('sip', lastCallee, server.domain, server.sipPort);
-      callSession =  myPhone.call(uri.toAor(), callOptions);
+      myPhone.call(uri.toAor(), callOptions);
       console.log('dial out:', lastCallee);
       infoLb.innerText = "呼叫中...";      
     }, function(){
