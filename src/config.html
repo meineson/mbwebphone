@@ -60,7 +60,8 @@
   </div>
 
   <script>
-    var deviceConfig = {audioin:'default', audioout:'default', videoin:'user'};
+    const isMobile = window.matchMedia("only screen and (max-width: 600px)").matches;
+    var deviceConfig = {audioin:'default', audioout:'default', videoin:isMobile?'user':'desktop'};
     var server = {
       domain: '',
       sipPort: 8060,
@@ -131,13 +132,21 @@
             document.getElementById("aidev").innerHTML += buildDeviceOption(device);
           }else if(device.kind === 'audiooutput'){
             document.getElementById("aodev").innerHTML += buildDeviceOption(device);
+          }else if(device.kind === 'videoinput' && !isMobile){
+            document.getElementById("videv").innerHTML += buildDeviceOption(device);
           }
         });  
         
-        document.getElementById("videv").innerHTML += 
-          buildDeviceOption({kind:"videoinput", label:"前置摄像头", deviceId:"user"})      
-        document.getElementById("videv").innerHTML += 
-          buildDeviceOption({kind:"videoinput", label:"后置摄像头", deviceId:"environment"})      
+        if(isMobile){
+          document.getElementById("videv").innerHTML += 
+            buildDeviceOption({kind:"videoinput", label:"前置摄像头", deviceId:"user"})      
+          document.getElementById("videv").innerHTML += 
+            buildDeviceOption({kind:"videoinput", label:"后置摄像头", deviceId:"environment"})      
+        }else{
+          //add desktop share video input
+          document.getElementById("videv").innerHTML += 
+            buildDeviceOption({kind:"videoinput", label:"桌面分享", deviceId:"desktop"})      
+        }
       }).then(()=>{
         //update ui select
         try{

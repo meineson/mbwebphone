@@ -72,8 +72,9 @@ const videoConstraints = {
 };
 
 const isMobile = window.matchMedia("only screen and (max-width: 600px)").matches;
-var portraitMode = false;
-window.onresize = ()=>{
+var portraitMode = isMobile?true:false;
+function changeLocalPreview(){
+  console.log("local preview portraitMode:", portraitMode);
   portraitMode = (window.innerWidth/window.innerHeight > 1)?false:true;
   lvDiv.style.width = portraitMode?"130px":"356px";
   lvDiv.style.height = portraitMode?"230px":"200px";
@@ -90,8 +91,13 @@ function readConfig(){
   }
   if(localStorage.getItem('devices')){
     deviceConfig = JSON.parse(localStorage.getItem('devices'))
-    // videoConstraints.deviceId = deviceConfig.videoin; //need update
-    videoConstraints.facingMode = deviceConfig.videoin; //need update
+    if(isMobile){
+      //use front, back switch
+      videoConstraints.facingMode = deviceConfig.videoin; //need update
+    }else{
+      //else using deviceid
+      videoConstraints.deviceId = deviceConfig.videoin; //need update
+    }      
   }  
   console.log("config readed:", user, server, deviceConfig);  
 }
@@ -361,7 +367,7 @@ var callOptions = {
       console.log("call accepted", data);
 
       callTimer = setInterval(() => {
-        infoLb.innerHTML = `${lastCallee}  ` + timeFromNow();        
+        infoLb.innerHTML = `<b>🟠 ${lastCallee}</b> <small>⏱️` + timeFromNow() + "</small>";        
       }, 1000);
     },
     'confirmed': function(data){
@@ -470,6 +476,8 @@ function doReg(){
 function callOrAnswer(videocall = true){
   camBtn.style.filter = "";
   micBtn.style.filter = "";
+
+  changeLocalPreview();
 
   if(callSession && callSession.direction == 'incoming'){      
     getLocalStream(videocall, function(localStream){
@@ -614,6 +622,9 @@ window.addEventListener("load", function(e){
     doReg();
   }
 })
+window.onresize = ()=>{
+  changeLocalPreview();
+}
 
 window.addEventListener("beforeunload", function (e) {
   console.log('ready to close?')
