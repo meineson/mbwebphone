@@ -33,6 +33,7 @@ const views = {
 
 const vDiv = document.getElementById('vdiv');;
 const lvDiv = document.getElementById('lvdiv');
+const dialpadDiv = document.getElementById('dialpad');
 const eMsgCheck = document.getElementById('eMsg');
 const calleeInput = document.getElementById("callee");
 const callBtn = document.getElementById('call');
@@ -43,6 +44,7 @@ const vAnsBtn = document.getElementById('vcallanswer');
 const aAnsBtn = document.getElementById('callanswer');
 const micBtn = document.getElementById('micctrl');
 const camBtn = document.getElementById('camctrl');
+const padBtn = document.getElementById('padbtn');
 const infoLb = document.getElementById('status');
 const regStat = document.getElementById('regstat');
 const alertMsg = document.getElementById('alertmsg');
@@ -478,6 +480,7 @@ function callOrAnswer(videocall = true){
   micBtn.style.filter = "";
 
   changeLocalPreview();
+  dialpadDiv.style.display = "none";
 
   if(callSession && callSession.direction == 'incoming'){      
     getLocalStream(videocall, function(localStream){
@@ -611,6 +614,23 @@ eMsgCheck.addEventListener('change', function(e){
   msgInput.hidden = !eMsgCheck.checked;
   msgBox.hidden = !eMsgCheck.checked;
 })
+
+document.querySelectorAll(".dialpad button")
+.forEach(item => {
+  item.onclick = ()=>{
+    if(callSession?.connection){
+      console.log("send dtmf:", item.innerText);
+      callSession.sendDTMF(item.innerText, {transportType:"RFC2833"});
+    }else{
+      callee.value += item.innerText;
+      callee.setSelectionRange(callee.value.length, callee.value.length);
+    }
+  }
+});
+
+padBtn.onclick = function(){
+  dialpadDiv.style.display = dialpadDiv.checkVisibility()?"none":"flex";
+}
 
 document.getElementById("about").addEventListener('click', function(){
   showVersion();
