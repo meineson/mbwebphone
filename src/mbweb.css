@@ -162,6 +162,14 @@ span {
   bottom: 55px;
 }
 
+.logo{
+  display: flex;
+  margin-left: 10px;
+  gap:5px;
+  align-items: center;
+  font-weight: bolder;
+}
+
 .infobox {
   display: flex; 
   position: fixed; 
