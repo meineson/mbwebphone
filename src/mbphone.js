@@ -16,7 +16,7 @@ var user = {
 }
 var lastCallee = '';
 
-const VERSION = "MeConf 咪呼 v1.3.1"
+const VERSION = "MeConf v1.3.2"
 function showVersion(){
   //show electron about or failed to js alert
   try{
@@ -631,6 +631,13 @@ document.querySelectorAll(".dialpad button")
 padBtn.onclick = function(){
   dialpadDiv.style.display = dialpadDiv.checkVisibility()?"none":"flex";
 }
+
+document.addEventListener('click', function(event) {
+  console.log(event.target); 
+  if(event.target === views.remoteView){
+    dialpadDiv.style.display = "none";  //click video to hide dial pad
+  }
+});
 
 document.getElementById("about").addEventListener('click', function(){
   showVersion();
