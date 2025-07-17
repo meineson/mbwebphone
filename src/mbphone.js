@@ -71,6 +71,14 @@ const videoConstraints = {
   // facingMode: { exact: "user" }
 };
 
+const isMobile = window.matchMedia("only screen and (max-width: 600px)").matches;
+var portraitMode = false;
+window.onresize = ()=>{
+  portraitMode = (window.innerWidth/window.innerHeight > 1)?false:true;
+  lvDiv.style.width = portraitMode?"130px":"356px";
+  lvDiv.style.height = portraitMode?"230px":"200px";
+}
+
 function readConfig(){
   calleeInput.value = localStorage.getItem('lastcallee');
 
