@@ -211,7 +211,7 @@ function uaStart(){
   myPhone.on('newRTCSession', function(e){ 
     var callReq = e.request;
 
-    if(callSession){
+    if(callSession && callSession.connection){
       console.log("only support one call now, 486 busy here");
       e.session.terminate({status_code: 486, reason_phrase:"BUSY"});
       return;
@@ -353,7 +353,7 @@ var callOptions = {
       console.log("call accepted", data);
 
       callTimer = setInterval(() => {
-        infoLb.innerHTML = `📳 与${lastCallee}通话中 ` + timeFromNow();        
+        infoLb.innerHTML = `${lastCallee}  ` + timeFromNow();        
       }, 1000);
     },
     'confirmed': function(data){
