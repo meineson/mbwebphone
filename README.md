@@ -19,15 +19,23 @@ __freeswitch server(docker):__
 <param name="ext-rtp-ip" value="$${external_rtp_ip}""/>
 <param name="ext-sip-ip" value="$${external_sip_ip}""/>
 
+#nano dialplan/default.xml  
+<!--<action application="set" data="ringback=${us-ring}"/>--> #183 make video call ring mis
+<action application="ring_ready"/>  #180 ring event only, play ring tone by web app
+
 #nano autoload_configs/switch.conf.xml
 <!-- RTP port range -->
 <param name="rtp-start-port" value="8000"/> #using your fs server udp port range
 <param name="rtp-end-port" value="8100"/>
 
+fix 488 error
 #nano autoload_configs/acl.conf.xml 
 <list name="wan.auto" default="allow">
-  <node type="allow" cidr="172.21.0.0/16"/>  #fix coturn 488 error, using your LAN ip range
+  <node type="allow" cidr="172.21.0.0/16"/>  
 </list>   
+or 
+#nano sip_profiles/internal.xml 
+<param name="apply-candidate-acl" value="any_v4.auto"/>
 
 #nano autoload_configs/event_socket.conf.xml  
     <param name="listen-ip" value="0.0.0.0"/>   #fix fs_cli.c:1699 main() Error Connecting []  
@@ -42,9 +50,9 @@ __WEB release__
 ```
 #npm run web
 ```
-send dist/mbwebphone.tgz to users:
+send dist/meconf.tgz to users:
 ```
-#tar zxvf mbwebphone.tgz
+#tar zxvf meconf.tgz
 #node miniweb.js
 ```
 visit http://localhost:3000 in chrome, edge, safari.

@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MBWebPhone 媒体设备配置</title>  
+  <title>配置</title>  
   <style>
     .regdiv{
       display: flex;
@@ -22,6 +22,13 @@
       display: flex;
       flex-direction:column;
       align-items:center;
+    }
+    .alert{
+      color: red;
+    }
+    .btn{
+      font-weight: bolder;
+      font-size: larger;
     }
   </style>
 </head>
@@ -46,14 +53,15 @@
     </div>
     <div>
       </br>
-      <label style="color: red;" id="alert"></label></br>
-      <button id="saveconfig" style="font-weight: bolder;font-size: larger;">💾 保存</button>
-      <button id="cancel" style="font-weight: bolder;font-size: larger;">✖️ 取消</button>
+      <label class="alert" id="alert"></label></br>
+      <button id="saveconfig" class="btn">💾 保存</button>
+      <button id="cancel" class="btn">✖️ 取消</button>
     </div>
   </div>
 
   <script>
-    var deviceConfig = {audioin:'default', audioout:'default', videoin:'desktop'};
+    const isMobile = window.matchMedia("only screen and (max-width: 600px)").matches;
+    var deviceConfig = {audioin:'default', audioout:'default', videoin:isMobile?'user':'desktop'};
     var server = {
       domain: '',
       sipPort: 8060,
@@ -99,9 +107,9 @@
     function buildDeviceOption(device){
       var radioElm;
       var rid = device.deviceId;
-      if(device.deviceId === ""){       
+      if(device.deviceId === "" || device.label === ""){       
         radioElm = `<input type='radio' id='${device.kind}-default' name='${device.kind}' value='default'>`;
-        radioElm += `<label for='${device.kind}-default'>默认设备（系统隐私保护）</label></input></br>`;
+        radioElm += `<label for='${device.kind}-default'>默认设备</label></input></br>`;
       }else{
         radioElm = `<input type='radio' id='${device.kind}-${rid}' name='${device.kind}' value='${device.deviceId}'>`;
         radioElm += `<label for='${device.kind}-${rid}'>${device.label}</label></input></br>`;
@@ -110,11 +118,11 @@
     }
 
     if(!navigator.mediaDevices){
-      alert("浏览器无法打开音视频设备，请以https://或file://方式访问。");
+      alert("无法打开音视频设备。");
       infoLb.innerText = '无法打开设备，无法呼叫';
     }
 
-    navigator.mediaDevices.getUserMedia({audio:true, video:false})
+    navigator.mediaDevices.getUserMedia({audio: {deviceId: undefined}})
     .then(stream => {
       navigator.mediaDevices?.enumerateDevices()
       .then(devices => {
@@ -124,14 +132,21 @@
             document.getElementById("aidev").innerHTML += buildDeviceOption(device);
           }else if(device.kind === 'audiooutput'){
             document.getElementById("aodev").innerHTML += buildDeviceOption(device);
-          }else if(device.kind === 'videoinput'){
+          }else if(device.kind === 'videoinput' && !isMobile){
             document.getElementById("videv").innerHTML += buildDeviceOption(device);
           }
-        });
+        });  
         
-        //add desktop share video input
-        document.getElementById("videv").innerHTML += 
-          buildDeviceOption({kind:"videoinput", label:"桌面分享", deviceId:"desktop"})      
+        if(isMobile){
+          document.getElementById("videv").innerHTML += 
+            buildDeviceOption({kind:"videoinput", label:"前置摄像头", deviceId:"user"})      
+          document.getElementById("videv").innerHTML += 
+            buildDeviceOption({kind:"videoinput", label:"后置摄像头", deviceId:"environment"})      
+        }else{
+          //add desktop share video input
+          document.getElementById("videv").innerHTML += 
+            buildDeviceOption({kind:"videoinput", label:"桌面分享", deviceId:"desktop"})      
+        }
       }).then(()=>{
         //update ui select
         try{
@@ -184,11 +199,11 @@
 
       saveConfig();
       document.getElementById("alert").innerHTML = "设备选择已保存。";
-      window.location.href = "index.html";  //history goback maybe not reload
+      window.location.replace("index.html");  //history goback maybe not reload      
     })
 
     document.getElementById("cancel").addEventListener('click', function(){
-      window.location.href = "index.html";
+      window.location.replace("index.html"); 
     });
   </script>
 </body>

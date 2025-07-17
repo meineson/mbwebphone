@@ -16,7 +16,7 @@ var user = {
 }
 var lastCallee = '';
 
-const VERSION = "MBWebPhone V1.3.1"
+const VERSION = "MeConf v1.3.2"
 function showVersion(){
   //show electron about or failed to js alert
   try{
@@ -33,6 +33,7 @@ const views = {
 
 const vDiv = document.getElementById('vdiv');;
 const lvDiv = document.getElementById('lvdiv');
+const dialpadDiv = document.getElementById('dialpad');
 const eMsgCheck = document.getElementById('eMsg');
 const calleeInput = document.getElementById("callee");
 const callBtn = document.getElementById('call');
@@ -43,6 +44,7 @@ const vAnsBtn = document.getElementById('vcallanswer');
 const aAnsBtn = document.getElementById('callanswer');
 const micBtn = document.getElementById('micctrl');
 const camBtn = document.getElementById('camctrl');
+const padBtn = document.getElementById('padbtn');
 const infoLb = document.getElementById('status');
 const regStat = document.getElementById('regstat');
 const alertMsg = document.getElementById('alertmsg');
@@ -63,12 +65,22 @@ var callTimer = null;
 var deviceConfig = {audioin:'default', audioout:'default', videoin:'default'};
 
 const videoConstraints = {
-  deviceId: deviceConfig.videoin,
+  // deviceId: deviceConfig.videoin,  android only use front, back camera
   width: { ideal: 1280 },
   height: { ideal: 720 },
   frameRate: { ideal: 30 },
+  // facingMode: deviceConfig.videoin //"user, environment"
   // facingMode: { exact: "user" }
 };
+
+const isMobile = window.matchMedia("only screen and (max-width: 600px)").matches;
+var portraitMode = isMobile?true:false;
+function changeLocalPreview(){
+  console.log("local preview portraitMode:", portraitMode);
+  portraitMode = (window.innerWidth/window.innerHeight > 1)?false:true;
+  lvDiv.style.width = portraitMode?"130px":"356px";
+  lvDiv.style.height = portraitMode?"230px":"200px";
+}
 
 function readConfig(){
   calleeInput.value = localStorage.getItem('lastcallee');
@@ -81,7 +93,13 @@ function readConfig(){
   }
   if(localStorage.getItem('devices')){
     deviceConfig = JSON.parse(localStorage.getItem('devices'))
-    videoConstraints.deviceId = deviceConfig.videoin; //need update
+    if(isMobile){
+      //use front, back switch
+      videoConstraints.facingMode = deviceConfig.videoin; //need update
+    }else{
+      //else using deviceid
+      videoConstraints.deviceId = deviceConfig.videoin; //need update
+    }      
   }  
   console.log("config readed:", user, server, deviceConfig);  
 }
@@ -100,14 +118,14 @@ var clearCall = function(e){
   callerDiv.style.display = "none";
   calleeDiv.style.display = "flex";
 
-  infoLb.innerText = "呼叫结束";
+  infoLb.innerText = "挂断 " + e?.cause;
 
   try{
-    callSession.terminate();
     infoBox.style.display = "flex";
     callerDiv.style.display = "none";
     calleeDiv.style.display = "flex";
     callctrl.style.display = "none";    
+    callSession.terminate();
     callSession = null;    
   }catch(e){
     callSession = null;  
@@ -156,7 +174,7 @@ function uaStart(){
 
   //server state cb
   myPhone.on('connected', function(e){ 
-    infoLb.innerText = "服务器已连接";
+    infoLb.innerText = "连接";
     console.log('connected');
   });
   myPhone.on('disconnected', function(e){ 
@@ -208,6 +226,12 @@ function uaStart(){
   //call process cb
   myPhone.on('newRTCSession', function(e){ 
     var callReq = e.request;
+
+    if(callSession && callSession.connection){
+      console.log("only support one call now, 486 busy here");
+      e.session.terminate({status_code: 486, reason_phrase:"BUSY"});
+      return;
+    }
 
     console.log('new session:', e.session);
     callSession = e.session;
@@ -296,7 +320,7 @@ function uaStart(){
 function showRemoteStreams(callConn) {
   //https://developer.mozilla.org/zh-CN/docs/Web/API/RTCPeerConnection/track_event
   callConn.ontrack = function(e){
-    console.log("remote streams", e.streams);
+    console.log("remote streams", e.streams, e.track.kind, e.track.readyState);
     var remotestream = e.streams[0];
     views.remoteView.srcObject = remotestream;
 
@@ -345,7 +369,7 @@ var callOptions = {
       console.log("call accepted", data);
 
       callTimer = setInterval(() => {
-        infoLb.innerHTML = `📳 与${lastCallee}通话中 ` + timeFromNow();        
+        infoLb.innerHTML = `<b>🟠 ${lastCallee}</b> <small>⏱️` + timeFromNow() + "</small>";        
       }, 1000);
     },
     'confirmed': function(data){
@@ -355,7 +379,7 @@ var callOptions = {
       console.log("get usermedia failed", data);
     },
     'ended':      function(data){ 
-      clearCall();            
+      clearCall(data);            
       console.log("call ended", data);
     }
   },
@@ -368,17 +392,17 @@ var callOptions = {
 
 function getLocalStream(videocall, setStream, failedCb){
   if(!navigator.mediaDevices){
-    alert("浏览器无法打开音视频设备，请以https://或file://方式访问。");
+    alert("无法打开音视频设备。");
     infoLb.innerText = '无法打开设备，无法呼叫';
     return;
   }
 
-  navigator.permissions.query({ name: 'microphone' }).then(function(permissionStatus){
-    if(permissionStatus.state == "denied"){
-      alert("没有麦克风设备或未授权访问权限，通话异常。");
-    }
-    console.log(permissionStatus);
-  });
+  // navigator.permissions.query({ name: 'microphone' }).then(function(permissionStatus){
+  //   if(permissionStatus.state == "denied"){
+  //     alert("没有麦克风设备或未授权访问权限，通话异常。");
+  //   }
+  //   console.log(permissionStatus);
+  // });
   // navigator.permissions.query({ name: 'camera' }).then(function(permissionStatus){
   //   if(permissionStatus.state == "denied"){
   //     alert("未授权摄像头访问权限，视频通话异常。")
@@ -455,6 +479,9 @@ function callOrAnswer(videocall = true){
   camBtn.style.filter = "";
   micBtn.style.filter = "";
 
+  changeLocalPreview();
+  dialpadDiv.style.display = "none";
+
   if(callSession && callSession.direction == 'incoming'){      
     getLocalStream(videocall, function(localStream){
       lvDiv.style.display = videocall?"flex":"none";
@@ -486,7 +513,7 @@ function callOrAnswer(videocall = true){
       console.log(callOptions);
 
       var uri  = new JsSIP.URI('sip', lastCallee, server.domain, server.sipPort);
-      callSession =  myPhone.call(uri.toAor(), callOptions);
+      myPhone.call(uri.toAor(), callOptions);
       console.log('dial out:', lastCallee);
       infoLb.innerText = "呼叫中...";      
     }, function(){
@@ -501,6 +528,10 @@ vcallBtn.addEventListener('click', function(){
   vDiv.style.backgroundRepeat = 'no-repeat';
   vDiv.style.backgroundPosition = 'center';
   callOrAnswer(true);
+})
+
+views.remoteView.addEventListener('loadeddata', function(){
+  console.log("remote video can display");
 })
 
 callBtn.addEventListener('click', function(){   
@@ -584,12 +615,43 @@ eMsgCheck.addEventListener('change', function(e){
   msgBox.hidden = !eMsgCheck.checked;
 })
 
+document.querySelectorAll(".dialpad button")
+.forEach(item => {
+  item.onclick = ()=>{
+    if(callSession?.connection){
+      console.log("send dtmf:", item.innerText);
+      callSession.sendDTMF(item.innerText, {transportType:"RFC2833"});
+    }else{
+      callee.value += item.innerText;
+      callee.setSelectionRange(callee.value.length, callee.value.length);
+    }
+  }
+});
+
+padBtn.onclick = function(){
+  dialpadDiv.style.display = dialpadDiv.checkVisibility()?"none":"flex";
+}
+
+document.addEventListener('click', function(event) {
+  console.log(event.target); 
+  if(event.target === views.remoteView){
+    dialpadDiv.style.display = "none";  //click video to hide dial pad
+  }
+});
+
+document.getElementById("about").addEventListener('click', function(){
+  showVersion();
+})
+
 window.addEventListener("load", function(e){
   readConfig();
   if(server.domain.length > 3){
     doReg();
   }
 })
+window.onresize = ()=>{
+  changeLocalPreview();
+}
 
 window.addEventListener("beforeunload", function (e) {
   console.log('ready to close?')
