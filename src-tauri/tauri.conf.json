@@ -4,6 +4,7 @@
   "version": "1.3.2",
   "identifier": "cn.mbstudio.meconf",
   "build": {
+    "devUrl": "http://tauri.localhost",
     "frontendDist": "../src"
   },
   "app": {
