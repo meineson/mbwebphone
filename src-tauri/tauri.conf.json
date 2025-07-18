@@ -11,7 +11,7 @@
     "windows": [
       {
         "title": "MeConf 咪呼",
-        "url": "tauri://localhost/index.html",
+        "url": "index.html",
         "width": 1066,
         "height": 600,
         "minWidth": 480,
