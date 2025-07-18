@@ -82,6 +82,28 @@ function changeLocalPreview(){
   lvDiv.style.height = portraitMode?"230px":"200px";
 }
 
+function getMobileDevId(){
+  navigator.mediaDevices.getUserMedia({audio: {deviceId: undefined}})
+  .then(stream => {
+    navigator.mediaDevices?.enumerateDevices()
+    .then(devices => {
+      devices.forEach(device => {
+        console.log(`${device.kind}: ${device.label} (ID: ${device.deviceId})`);
+        if(isMobile && device.kind === "audioinput"
+            && deviceConfig.audioin === device.label){
+          deviceConfig.audioin = device.deviceId;
+          console.log("update mobile device id:", deviceConfig.audioin);
+        }                
+      });  
+    }); 
+          
+    stream.getTracks().forEach(track => track.stop());
+  })
+  .catch(error => {
+    alert("没有可用的音视频设备，或未授权访问！");
+  });    
+}
+
 function readConfig(){
   calleeInput.value = localStorage.getItem('lastcallee');
 
@@ -645,6 +667,7 @@ document.getElementById("about").addEventListener('click', function(){
 
 window.addEventListener("load", function(e){
   readConfig();
+  getMobileDevId();
   if(server.domain.length > 3){
     doReg();
   }
