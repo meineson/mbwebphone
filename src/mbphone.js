@@ -221,12 +221,12 @@ function uaStart(){
     vcallBtn.disabled = false;
     console.log('registered', e);
 
-    infoMsg = "🟩 " + user.name +" 在线";
+    infoMsg = "✅" + user.name;
     document.title = infoMsg;
     regStat.innerText = infoMsg;    
   });
   myPhone.on('unregistered', function(e){ 
-    infoMsg = "🟥 " + user.name +" 离线";
+    infoMsg = "🚫 " + user.name +" 离线";
     regStat.innerText = infoMsg;
     document.title = infoMsg;
     msgInput.disabled = true;
