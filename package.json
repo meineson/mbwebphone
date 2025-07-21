@@ -24,6 +24,9 @@
   "postinstall": "electron-builder install-app-deps",
   "build": {
     "appId": "cn.mbstudio.meconf",
+    "files":[
+      "!**/src-tauri"
+    ],    
     "mac": {
       "icon": "build/icon.icns",
       
