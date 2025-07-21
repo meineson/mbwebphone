@@ -111,8 +111,14 @@
         radioElm = `<input type='radio' id='${device.kind}-default' name='${device.kind}' value='default'>`;
         radioElm += `<label for='${device.kind}-default'>默认设备</label></input></br>`;
       }else{
-        radioElm = `<input type='radio' id='${device.kind}-${rid}' name='${device.kind}' value='${device.deviceId}'>`;
-        radioElm += `<label for='${device.kind}-${rid}'>${device.label}</label></input></br>`;
+        if(device.kind === "audioinput" && isMobile){
+          //android use name to avoid deviceid change everytime
+          radioElm = `<input type='radio' id='${device.kind}-${device.label}' name='${device.kind}' value='${device.label}'>`;
+          radioElm += `<label for='${device.kind}-${device.label}'>${device.label}</label></input></br>`;
+        }else{
+          radioElm = `<input type='radio' id='${device.kind}-${rid}' name='${device.kind}' value='${device.deviceId}'>`;
+          radioElm += `<label for='${device.kind}-${rid}'>${device.label}</label></input></br>`;
+        }
       }
       return radioElm;
     }
