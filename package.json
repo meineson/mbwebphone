@@ -10,12 +10,14 @@
   "copyright": "Copyright © 2025",
   "icon": "favicon.ico",
   "scripts": {
-    "start": "electron . --remote-debugging-port=9222 --trace-warnings",
-    "dist": "npm run web & electron-builder -m dmg & electron-builder -w nsis & electron-builder -l deb",
-    "mac": "electron-builder -m dmg",
-    "win": "electron-builder -w portable",
-    "lin": "electron-builder -l deb",
-    "web": "mkdir -p ./dist && tar zcvf ./dist/meconf.tgz *.html *.js *.css *.ico img/*"
+    "webdev": "webpack --mode=development",
+    "start": "npm run webdev && electron . --remote-debugging-port=9222 --trace-warnings",
+    "webrel": "webpack --mode=production",
+    "web": "npm run webrel && mkdir -p ./dist && tar zcvf ./dist/meconf.tgz *.html *.js *.css *.ico img/*",
+    "mac": "npm run webrel && electron-builder -m dmg",
+    "win": "npm run webrel && electron-builder -w portable",
+    "lin": "npm run webrel && electron-builder -l deb",
+    "dist": "npm run web & electron-builder -m dmg & electron-builder -w nsis & electron-builder -l deb"
   },
   "devDependencies": {
     "electron": "^37.2.1",
