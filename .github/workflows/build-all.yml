@@ -31,7 +31,7 @@ jobs:
         cache: 'npm'
     - run: npm i
     - run: npm run web   
-    - run: npx electron-builder -m dmg --x86 --arm64 
+    - run: npx electron-builder -m dmg --x64 --arm64 
     - name: Create Release snapshot
       id: create_release
       uses: softprops/action-gh-release@v2
