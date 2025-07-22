@@ -30,7 +30,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm i
-    - run: npm run webrel && electron-builder -m dmg --arm64 --x64     
+    - run: npm run webrel && npx electron-builder -m dmg --arm64 --x64     
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
