@@ -32,6 +32,7 @@ jobs:
     - run: npm i
     - run: npm run web
     - run: npm run lin
+    - run: npm run mac
     - name: Upload releases
       uses: actions/upload-artifact@v4
       with:
