@@ -31,11 +31,13 @@ jobs:
         cache: 'npm'
     - run: npm i
     - run: npm run webrel && npx electron-builder -m dmg --arm64 --x64     
+    - run: npx electron-builder -l deb --arm64 --x64     
+    - run: npx electron-builder -w nsis portable --arm64 --x64     
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
           token: ${{ secrets.GH_TOKEN }}
-          name: "MeConf Nightly build"
+          name: "MeConf Nightly build ALL"
           draft: false
           prerelease: false
           generate_release_notes: true
@@ -44,4 +46,7 @@ jobs:
           files: |
             README.md
             dist/MeConf*.dmg
+            dist/MeConf*.exe
+            dist/MeConf*.deb
+            dist/MeConf_web.tgz
           
