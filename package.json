@@ -13,7 +13,7 @@
     "webdev": "webpack --mode=development",
     "start": "npm run webdev && electron . --remote-debugging-port=9222 --trace-warnings",
     "webrel": "webpack --mode=production",
-    "web": "npm run webrel && mkdir -p ./dist && tar zcvf ./dist/meconf.tgz *.html *.js *.css *.ico img/*",
+    "web": "npm run webrel && mkdir -p ./dist && tar zcvf ./dist/meconf.tgz *.html mbphone.bundle.js miniweb.js *.css *.ico img/*",
     "mac": "npm run webrel && electron-builder -m dmg",
     "win": "npm run webrel && electron-builder -w portable",
     "lin": "npm run webrel && electron-builder -l deb",

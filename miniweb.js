@@ -3,12 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const PORT = 3000;
 
-const options = {
-	key: fs.readFileSync('./key/privatekey.pem'), //密钥路径
-	cert: fs.readFileSync('./key/certificate.pem')
-};
-
-const server = http.createServer(options, (req, res) => {
+const server = http.createServer((req, res) => {
   //allow local file://app.html access        
   const filePath = path.join(__dirname, './', req.url === '/' ? 'index.html' : req.url);
   const fileExt = path.extname(filePath);

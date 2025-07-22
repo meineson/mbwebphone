@@ -1,3 +1,5 @@
+import JsSIP from "./jssip-3.10.0.min.js"
+
 var server = {
   domain: '',   //172.21.2.210
   sipPort: 8060,
@@ -15,6 +17,7 @@ var user = {
     regExpires: 180,
 }
 var lastCallee = '';
+var infoMsg;
 
 const VERSION = "MeConf v1.3.2"
 function showVersion(){
