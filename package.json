@@ -54,5 +54,8 @@
     "linux": {
       "icon": "build/icon.png"
     }
+  },
+  "dependencies": {
+    "dmg-license": "^1.0.11"
   }
 }
