@@ -44,4 +44,6 @@ jobs:
         generate_release_notes: true
         body_path: ./changelog.md
         files: |
+          ./changelog.md
           ./dist/MeConf_web.tgz         
+          ./dist/*.dmg                   
