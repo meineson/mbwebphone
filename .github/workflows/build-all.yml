@@ -31,7 +31,6 @@ jobs:
         cache: 'npm'
     - run: npm i
     - run: npm run webrel && npx electron-builder -m dmg --arm64 --x64    
-    - uses: actions/checkout@v2
     - name: Create Release snapshot
       id: create_release
       uses: softprops/action-gh-release@v2
@@ -44,7 +43,7 @@ jobs:
         generate_release_notes: true
         body_path: changelog.md
         files: |
-          changelog.md
-          dist/*.dmg
-          dist/*.tgz
+          ./changelog.md
+          ./dist/*.dmg
+          ./dist/*.tgz
           
