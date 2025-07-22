@@ -32,9 +32,7 @@ jobs:
     - run: npm i
     - run: npm run webrel && npx electron-builder -m dmg --arm64 --x64     
     - name: Create Release snapshot
-      id: create_release_snapshot
       uses: softprops/action-gh-release@v2
-      if: github.ref_type == 'tag'
       with:
         tag_name: ${{ steps.date.outputs.date }}
         token: ${{ secrets.GH_TOKEN }}
