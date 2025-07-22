@@ -12,7 +12,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on:  macos-latest
 
     strategy:
       matrix:
@@ -30,8 +30,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm i
-    - run: npm run web
-    - run: npm run lin
+    - run: npm run win
     - name: Upload releases
       uses: actions/upload-artifact@v4
       with:
