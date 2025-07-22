@@ -32,6 +32,8 @@ jobs:
     - run: npm i
     - run: npm run web   
     - run: npx electron-builder -m dmg --x64 --arm64 
+    - run: npx electron-builder -l deb --x64 --arm64 
+    - run: npx electron-builder -w nsis portable --x64 --arm64 
     - name: Create Release snapshot
       id: create_release
       uses: softprops/action-gh-release@v2
@@ -47,3 +49,5 @@ jobs:
           ./changelog.md
           ./dist/MeConf_web.tgz         
           ./dist/*.dmg                   
+          ./dist/*.exe                   
+          ./dist/*.deb                                       
