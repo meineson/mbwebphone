@@ -6,8 +6,8 @@ name: build meconf mac dist
 on:
   push:
     branches: [ "newui" ]
-  pull_request:
-    branches: [ "newui" ]
+    tags:
+      - "v*.*.*"
 
 jobs:
   build:
@@ -31,13 +31,12 @@ jobs:
         cache: 'npm'
     - run: npm i
     - run: npm run webrel && npx electron-builder -m dmg --arm64 --x64     
-    - run: npx electron-builder -l deb --arm64 --x64     
-    - run: npx electron-builder -w nsis portable --arm64 --x64     
     - name: Create Release snapshot
+      id: create release snapshot
       uses: softprops/action-gh-release@v2
+      if: github.ref_type == 'tag'
       with:
         tag_name: ${{ steps.date.outputs.date }}
-        release_name: ${{ steps.date.outputs.date }}
         token: ${{ secrets.GH_TOKEN }}
         name: "MeConf Nightly build ALL"
         draft: false
