@@ -30,6 +30,5 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm i
-    - run: sudo apt install wine
     - run: npm run web
     - run: npm run lin
