@@ -32,3 +32,8 @@ jobs:
     - run: npm i
     - run: npm run web
     - run: npm run lin
+    - name: upload result
+      uses: actions/upload-artifact@v1
+      with:
+        name: meconf-release
+        path: ${{ github.workspace }}/meconf
