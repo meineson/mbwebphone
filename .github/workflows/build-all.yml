@@ -30,11 +30,20 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm i
-    - run: npm run webrel && npx electron-builder -m dmg --arm64 --x64     
+    - run: npm run webrel && npx electron-builder -m dmg --arm64 --x64    
+    - uses: actions/checkout@v2
+    - name: Query version number
+      id: get_version
+      shell: bash
+      run: |
+        echo "using version tag ${GITHUB_REF:10}"
+        echo ::set-output name=version::"${GITHUB_REF:10}"
+
     - name: Create Release snapshot
+      id: create_release
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: ${{ steps.date.outputs.date }}
+        tag_name: '${{ steps.get_version.outputs.VERSION }}'
         token: ${{ secrets.GH_TOKEN }}
         name: "MeConf Nightly build ALL"
         draft: false
