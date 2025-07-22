@@ -31,4 +31,5 @@ jobs:
         cache: 'npm'
     - run: npm i
     - run: apt install wine
-    - run: npm run dist
+    - run: npm run web
+    - run: npm run lin
