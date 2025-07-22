@@ -30,7 +30,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm i
-    - run: npm run webrel && npx electron-builder -m dmg --arm64 --x64    
+    - run: npm run webrel   
     - name: Create Release snapshot
       id: create_release
       uses: softprops/action-gh-release@v2
@@ -41,6 +41,6 @@ jobs:
         draft: false
         prerelease: false
         generate_release_notes: true
-        body_path: changelog.md
+        body_path: ./changelog.md
         files: |
           ./dist/MeConf_web.tgz         
