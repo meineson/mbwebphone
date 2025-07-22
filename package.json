@@ -19,17 +19,19 @@
   },
   "devDependencies": {
     "electron": "^37.2.1",
-    "electron-builder": "^26.0.12"
+    "electron-builder": "^26.0.12",
+    "terser-webpack-plugin": "^5.3.14",
+    "webpack": "^5.100.2",
+    "webpack-cli": "^6.0.1"
   },
   "postinstall": "electron-builder install-app-deps",
   "build": {
     "appId": "cn.mbstudio.meconf",
-    "files":[
+    "files": [
       "!**/src-tauri"
-    ],    
+    ],
     "mac": {
       "icon": "build/icon.icns",
-      
       "category": "public.app-category.utilities",
       "extendInfo": {
         "hardenedRuntime": true,
