@@ -56,8 +56,10 @@ jobs:
         ndk-version: r27d  # 选择合适的NDK版本，例如 r21d, r22b 等
         add-to-path: true  # 将NDK路径添加到PATH环境变量中
 
-    - run: export NDK_HOME = ${{ steps.ndk.outputs.ndk-path }}
-    - run: yarn && yarn tauri android build 
+    - name: build apk
+      env:
+        NDK_HOME: ${{ steps.ndk.outputs.ndk-path }}
+      run: yarn && yarn tauri android build 
 
     - name: Create Release snapshot
       id: create_release
