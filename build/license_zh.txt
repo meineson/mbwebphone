@@ -1,4 +1,4 @@
-{
+﻿{
   "lang": "Chinese",
   "agree": "同意",
   "disagree": "不同意",
