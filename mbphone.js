@@ -19,7 +19,10 @@ var user = {
 var lastCallee = '';
 var infoMsg;
 
-const VERSION = "MeConf v1.3.2"
+const VERSION = "MeConf v1.3.3"
+const MAX_BITRATE = 2*1024*1024;  //2M
+const VIDEO_MAX = {width:1280, height:720};
+
 function showVersion(){
   //show electron about or failed to js alert
   try{
@@ -69,8 +72,8 @@ var deviceConfig = {audioin:'default', audioout:'default', videoin:'default'};
 
 const videoConstraints = {
   // deviceId: deviceConfig.videoin,  android only use front, back camera
-  width: { ideal: 1280 },
-  height: { ideal: 720 },
+  width: { ideal: VIDEO_MAX.width },
+  height: { ideal: VIDEO_MAX.height },
   frameRate: { ideal: 30 },
   // facingMode: deviceConfig.videoin //"user, environment"
   // facingMode: { exact: "user" }
@@ -105,6 +108,32 @@ function getMobileDevId(){
   .catch(error => {
     alert("没有可用的音视频设备，或未授权访问！");
   });    
+}
+
+function setVideoBitrate(peerConnection, bitrate){
+  //set bitrate
+  const senders = peerConnection.getSenders();        
+  senders?.forEach(sender => {
+    if(sender.track.kind === "video"){
+      const parameters = sender.getParameters();
+      parameters.encodings[0].maxBitrate = bitrate;
+      sender.setParameters(parameters);
+    }
+  });
+}
+
+function setVideoTrackContentHints(stream, hint) {
+  const tracks = stream.getVideoTracks();
+  tracks.forEach((track) => {
+    if ("contentHint" in track) {
+      track.contentHint = hint;
+      if (track.contentHint !== hint) {
+        console.error(`Invalid video track contentHint: "${hint}"`);
+      }
+    } else {
+      console.error("MediaStreamTrack contentHint attribute not supported");
+    }
+  });
 }
 
 function readConfig(){
@@ -260,7 +289,7 @@ function uaStart(){
 
     console.log('new session:', e.session);
     callSession = e.session;
-
+   
     //fix call,answer too slow problem
     callSession.on("icecandidate", function (e) {
       if ( typeof e.candidate === "object" &&         
@@ -277,13 +306,22 @@ function uaStart(){
       var peerConnection = callSession.connection;
       console.log('dial out');      
       showRemoteStreams(peerConnection);
+
+      peerConnection.onconnectionstatechange = (ev) => {
+        switch (peerConnection.connectionState) {
+          case "connected":
+            setVideoBitrate(peerConnection, MAX_BITRATE);             
+            break;
+        }
+      };         
     }else if(callSession.direction == 'incoming'){
       console.log('call in', e.request.from);           
       callSession.on('peerconnection', function(data){ 
         console.log('peerconnection:', data.peerconnection);
         data.peerconnection.onconnectionstatechange = (ev) => {
           switch (data.peerconnection.connectionState) {
-            case "connected":              
+            case "connected":       
+              setVideoBitrate(data.peerconnection, MAX_BITRATE);      
               views.selfView.srcObject = callSession.connection.getLocalStreams()[0];
               if(views.selfView.srcObject.getVideoTracks().length > 0){
                 lvDiv.style.display = "flex";
@@ -513,6 +551,7 @@ function callOrAnswer(videocall = true){
       camBtn.hidden = videocall?false:true;
       views.selfView.srcObject = localStream; 
 
+      setVideoTrackContentHints(localStream, "detail");
       answerOptions.mediaStream = localStream;
       callSession.answer(answerOptions);  //using default device to answer
       console.log("answer option:", answerOptions);
@@ -534,6 +573,7 @@ function callOrAnswer(videocall = true){
       camBtn.hidden = videocall?false:true;
       views.selfView.srcObject = localStream; 
 
+      setVideoTrackContentHints(localStream, "detail");
       callOptions.mediaStream = localStream;  //U can choose different device to callout
       console.log(callOptions);
 
