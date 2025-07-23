@@ -7,8 +7,8 @@ on:
   push:
     branches: 
       - "TauriUI"
-    paths:
-      - 'changelog_apk.md'
+    # paths:
+    #   - 'changelog_apk.md'
     tags:
       - "v*.*.*"
 
@@ -34,8 +34,7 @@ jobs:
         cache: 'npm'
 
     - name: Check Rust
-      run: rustup --version
-      run: rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
+      run: rustup --version && rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
 
     - name: Set up JDK
       uses: actions/setup-java@v4
