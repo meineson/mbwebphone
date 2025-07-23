@@ -7,8 +7,8 @@ on:
   push:
     branches: 
       - "TauriUI"
-    # paths:
-    #   - 'changelog_apk.md'
+    paths:
+      - 'changelog_apk.md'
     tags:
       - "v*.*.*"
 
@@ -54,18 +54,18 @@ jobs:
       uses: nttld/setup-ndk@v1
       id: setup-ndk
       with:
-        ndk-version: r27d  # 选择合适的NDK版本，例如 r21d, r22b 等
+        ndk-version: r27d  
         link-to-sdk: true
-        add-to-path: true  # 将NDK路径添加到PATH环境变量中
+        add-to-path: true  
 
     - name: Decode Keystore
       env:
         ENCODED_STRING: ${{ secrets.SIGNING_KEY }}  
       run: |
-        echo $ENCODED_STRING | base64 -d > keystore.jks
+        echo $ENCODED_STRING | base64 -d > ./src-tauri/gen/android/app/keystore.jks
 
     - name: build apk
-      run: yarn &&  yarn tauri android build  -t aarch64
+      run: yarn &&  yarn tauri android build
       env:
         NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
 
