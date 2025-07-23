@@ -55,11 +55,16 @@ jobs:
       with:
         ndk-version: r27d  # 选择合适的NDK版本，例如 r21d, r22b 等
         link-to-sdk: true
-        local-cache: true
         add-to-path: true  # 将NDK路径添加到PATH环境变量中
 
+    - name: Decode Keystore
+      env:
+        ENCODED_STRING: ${{ secrets.SIGNING_KEY }}  
+      run: |
+        echo $ENCODED_STRING | base64 -d > keystore.jks
+
     - name: build apk
-      run: yarn && yarn tauri android build 
+      run: yarn &&  yarn tauri android build  -t aarch64
       env:
         NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
 
