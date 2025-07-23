@@ -33,6 +33,20 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
 
+
+    - name: Get version from package.json
+      id: get_version
+      run: echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
+
+    - name: Use version
+      run: echo "Package version is $VERSION"
+      
+    - name: Set up Android NDK
+      uses: nttld/setup-ndk@v1
+      with:
+        ndk-version: r27d  # 选择合适的NDK版本，例如 r21d, r22b 等
+        add-to-path: true  # 将NDK路径添加到PATH环境变量中
+
     - name: Check Rust
       run: rustup --version && rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
 
@@ -41,9 +55,6 @@ jobs:
       with:
         java-version: 17    
         distribution: "oracle"
-
-    - name: NDK setup
-      run: export NDK_HOME="$ANDROID_HOME/ndk/$(ls -1 $ANDROID_HOME/ndk)"
 
     - name: Install app dependencies and build it
       run: yarn && yarn tauri android build 
