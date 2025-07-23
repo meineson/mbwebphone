@@ -5,7 +5,10 @@ name: meconf build snapshot
 
 on:
   push:
-    branches: [ "newui" ]
+    branches: 
+      - "newui"
+    paths:
+      - 'changelog.md'
     tags:
       - "v*.*.*"
 
