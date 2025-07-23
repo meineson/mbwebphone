@@ -31,8 +31,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-
-    - name: Build MeConf packages
     - run: npm i
     - run: npm run web   
     - run: npx electron-builder -m dmg --x64 --arm64 
