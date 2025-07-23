@@ -556,7 +556,7 @@ function callOrAnswer(videocall = true){
       setupCall(false, calleeInput.value, "应答接通");
             
       callTimer = setInterval(() => {
-        infoLb.innerText = "通话时长 "+ timeFromNow();
+        infoLb.innerHTML = `<b>🟠 ${lastCallee}</b> <small>⏱️` + timeFromNow() + "</small>";        
       }, 1000);
     }, function(){
       callSession.terminate();

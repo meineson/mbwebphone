@@ -65,7 +65,7 @@ jobs:
         echo $ENCODED_STRING | base64 -d > ./src-tauri/gen/android/app/keystore.jks
 
     - name: build apk
-      run: yarn &&  yarn tauri android build
+      run: yarn &&  yarn tauri android build -t aarch64
       env:
         NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
 
@@ -76,7 +76,7 @@ jobs:
       id: create_release
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: $VERSION
+        tag_name: ${{ env.VERSION }}
         token: ${{ secrets.REL_TOKEN }}
         name: "MeConf Nightly build ALL"
         draft: false
@@ -84,4 +84,4 @@ jobs:
         generate_release_notes: false
         files: |
           ./changelog_apk.md
-          ./**/*release.apk
+          ./MeConf*.apk
