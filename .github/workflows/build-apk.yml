@@ -40,6 +40,8 @@ jobs:
       uses: actions/setup-java@v4
       with:
         java-version: 17    
+        distribution: "oracle"
+      run: java --version
 
     - name: Install app dependencies and build it
       run: yarn && yarn tauri android build 
