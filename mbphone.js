@@ -18,6 +18,7 @@ var user = {
 }
 var lastCallee = '';
 var infoMsg;
+var lastCaller = '';  //incoming caller
 
 const VERSION = "MeConf v1.3.3"
 const MAX_BITRATE = 2*1024*1024;  //2M
@@ -337,10 +338,10 @@ function uaStart(){
         showRemoteStreams(data.peerconnection);
       });
 
-      var callex = callReq.from._uri._user;
+      lastCaller = callReq.from._uri._user;
       //show incoming call video answer btn?
       vAnsBtn.hidden = (callReq.body.search("m=video")>0)?false:true;
-      setupCall(true, callex, "来电");
+      setupCall(true, lastCaller, "来电");
       
       try{
         window.phone.showMe();
@@ -556,10 +557,10 @@ function callOrAnswer(videocall = true){
       callSession.answer(answerOptions);  //using default device to answer
       console.log("answer option:", answerOptions);
 
-      setupCall(false, calleeInput.value, "应答接通");
+      setupCall(false, lastCaller, "应答接通");
             
       callTimer = setInterval(() => {
-        infoLb.innerText = "通话时长 "+ timeFromNow();
+        infoLb.innerHTML = `<b>🟠 ${lastCaller}</b> <small>⏱️` + timeFromNow() + "</small>";        
       }, 1000);
     }, function(){
       callSession.terminate();
