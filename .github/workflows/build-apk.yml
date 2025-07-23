@@ -24,7 +24,6 @@ jobs:
 
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}  # 匹配自定义名称
-      NDK_HOME: ${{ steps.ndk.outputs.ndk-path }}  # 使用步骤的输出作为环境变量值
 
     steps:
     - uses: actions/checkout@v4
@@ -42,12 +41,6 @@ jobs:
     - name: Use version
       run: echo "Package version is $VERSION"
       
-    - name: Set up Android NDK
-      uses: nttld/setup-ndk@v1
-      with:
-        ndk-version: r27d  # 选择合适的NDK版本，例如 r21d, r22b 等
-        add-to-path: true  # 将NDK路径添加到PATH环境变量中
-
     - name: Check Rust
       run: rustup --version && rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
 
@@ -57,8 +50,14 @@ jobs:
         java-version: 17    
         distribution: "oracle"
 
-    - name: Install app dependencies and build it
-      run: yarn && yarn tauri android build 
+    - name: Set up Android NDK
+      uses: nttld/setup-ndk@v1
+      with:
+        ndk-version: r27d  # 选择合适的NDK版本，例如 r21d, r22b 等
+        add-to-path: true  # 将NDK路径添加到PATH环境变量中
+
+    - run: export NDK_HOME = ${{ steps.ndk.outputs.ndk-path }}
+    - run: yarn && yarn tauri android build 
 
     - name: Create Release snapshot
       id: create_release
