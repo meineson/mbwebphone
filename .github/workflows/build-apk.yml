@@ -41,10 +41,12 @@ jobs:
       with:
         java-version: 17    
         distribution: "oracle"
-    - run: export NDK_HOME="$ANDROID_HOME/ndk/$(ls -1 $ANDROID_HOME/ndk)"
+
+    - name: NDK setup
+      run: export NDK_HOME="$ANDROID_HOME/ndk/$(ls -1 $ANDROID_HOME/ndk)"
 
     - name: Install app dependencies and build it
-    - run: yarn && yarn tauri android build 
+      run: yarn && yarn tauri android build 
 
     - name: Create Release snapshot
       id: create_release
