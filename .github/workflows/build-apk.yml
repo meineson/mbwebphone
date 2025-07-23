@@ -24,6 +24,7 @@ jobs:
 
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}  # 匹配自定义名称
+      NDK_HOME: ${{ steps.ndk.outputs.ndk-path }}  # 使用步骤的输出作为环境变量值
 
     steps:
     - uses: actions/checkout@v4
