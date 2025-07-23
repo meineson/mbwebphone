@@ -25,19 +25,18 @@ jobs:
     steps:
     - name: Checkout Code
     - uses: actions/checkout@v4
-
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+    - name: Build MeConf packages
     - run: npm i
     - run: npm run web   
     - run: npx electron-builder -m dmg --x64 --arm64 
     - run: npx electron-builder -l deb --x64 --arm64 
     - run: npx electron-builder -w nsis portable --x64 
     - run: npx electron-builder -w nsis portable --arm64 
-
     - name: Create Release snapshot
       id: create_release
       uses: softprops/action-gh-release@v2
