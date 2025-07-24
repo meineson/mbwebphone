@@ -128,7 +128,7 @@ protocol.registerSchemesAsPrivileged([{
     stream: false          // 是否需要使用流，如果用 registerStreamProtocol，改为 true
   }
 }]);
-// app.setAsDefaultProtocolClient('call'); //reg call:// protocal
+app.setAsDefaultProtocolClient('call'); //reg call:// protocal
 app.on('open-url', (event, url) => {
   console.log(`Handling custom protocol: ${url}`);
   var callee = url.slice('call://'.length)
