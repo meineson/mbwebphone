@@ -35,6 +35,8 @@ const createWindow = () => {
   const win = new BrowserWindow({
     width: 1066,
     height: 600,
+    minWidth: 640,
+    minHeight:480,
     autoHideMenuBar: true,
     webPreferences: {
       // allowRunningInsecureContent: true,
