@@ -1,7 +1,10 @@
 const { app, Tray, Menu, nativeImage, desktopCapturer, session, BrowserWindow, TouchBar } = require('electron')
+const { TouchBarLabel, TouchBarButton, TouchBarSpacer, TouchBarScrubber, TouchBarPopover } = TouchBar
 const { systemPreferences, ipcMain } = require('electron')
-const path = require('node:path')
+const path = require('node:path');
+const { electron } = require('node:process');
 
+var mainWin = null;    //electron main window
 async function checkAndApplyDeviceAccessPrivilege() {
   const cameraPrivilege = systemPreferences.getMediaAccessStatus('camera');
   console.log(
@@ -58,10 +61,67 @@ const createWindow = () => {
   return win;
 }
 
+//macos touchbar and call duration
+const infoTbl = new TouchBarLabel({ label: 'MeConf' })
+const dialTbb = new TouchBarButton({
+  icon: nativeImage.createFromPath(path.join(__dirname, 'img/dialpad.png')),
+  click: () => {  
+    mainWin.webContents.send('notification', {cmd: 'dialpad'});
+  } 
+})
+const aCallTbb = new TouchBarButton({
+  icon: nativeImage.createFromPath(path.join(__dirname, 'img/acall.png')),
+  click: () => {
+    mainWin.webContents.send('notification', {cmd: 'acall'});
+  } 
+})
+const vCallTbb = new TouchBarButton({ 
+  icon: nativeImage.createFromPath(path.join(__dirname, 'img/vcall.png')),
+  click: () => {
+    mainWin.webContents.send('notification', {cmd: 'vcall'});
+  } 
+})
+const hangTbb = new TouchBarButton({ 
+  icon: nativeImage.createFromPath(path.join(__dirname, 'img/hang.png')),
+  click: () => {
+    mainWin.webContents.send('notification', {cmd: 'hang'});
+  } 
+})
+const numbBar = new TouchBarScrubber({
+  items:[], //speed dial or history
+  selectedStyle: "background",
+  showArrowButtons: true,
+  select: (i)=>{
+    console.log("select", i);
+    if(i == -1) return;
+    mainWin.webContents.send('notification', 
+      {cmd: 'dialnum', number: numbBar.items[i].label});
+  },
+  highlight: (i)=>{
+    console.log("highlight", i);
+    if(i == -1) return;
+    mainWin.webContents.send('notification', 
+      {cmd: 'dialnum', number: numbBar.items[i].label});
+  },
+  mode: 'fixed'
+})
+const touchBar = new TouchBar({
+  items: [
+    infoTbl,
+    // new TouchBarLabel({ label: '快速拨号:' }),
+    numbBar,
+    dialTbb,
+    aCallTbb,
+    vCallTbb,
+    hangTbb
+  ]
+})
+
 app.whenReady().then(() => {
   checkAndApplyDeviceAccessPrivilege();
 
-  var mainWin = createWindow();
+  mainWin = createWindow();
+  mainWin.setTouchBar(touchBar)
 
   const icon = nativeImage.createFromPath(path.join(__dirname, 'img/tray.png'))
   var tray = new Tray(icon)
@@ -109,9 +169,24 @@ app.whenReady().then(() => {
     console.log("need show main window");
     mainWin.show();
   });
+
   ipcMain.handle("showver", () => {
     console.log("need show version");
     app.showAboutPanel();
+  });
+
+  ipcMain.handle('showStatus', (e, data) => {
+    infoTbl.label = data;
+  });
+
+  ipcMain.handle('showHistory', (e, data) => {
+    console.log("show history to touchbar:", data);
+    const newHis = [];
+    data.forEach(item => {
+      console.log("push items:", {label: item});
+      newHis.push({label: item});
+    })
+    numbBar.items = newHis;
   });
 })
 

@@ -16,18 +16,19 @@ var user = {
     authPwd: '',
     regExpires: 180,
 }
-var lastCallee = '';
+var lastCallee = [];
 var infoMsg;
 var lastCaller = '';  //incoming caller
 
 const VERSION = "MeConf v1.3.3"
 const MAX_BITRATE = 2*1024*1024;  //2M
 const VIDEO_MAX = {width:1280, height:720};
+const VIDEOHINTS = "motion";  //canbe detail,motion,text
 
 function showVersion(){
   //show electron about or failed to js alert
   try{
-    window.phone.showVer();
+    phone?.showVer();
   }catch(e){
     alert(VERSION);
   }    
@@ -138,8 +139,6 @@ function setVideoTrackContentHints(stream, hint) {
 }
 
 function readConfig(){
-  calleeInput.value = localStorage.getItem('lastcallee');
-
   if(localStorage.getItem('user')){
     user = JSON.parse(localStorage.getItem('user'))
   }
@@ -156,7 +155,22 @@ function readConfig(){
       videoConstraints.deviceId = deviceConfig.videoin; //need update
     }      
   }  
-  console.log("config readed:", user, server, deviceConfig);  
+  try{
+    const callHis = JSON.parse(localStorage.getItem('lastcallee'));
+    lastCallee = callHis.history;
+    calleeInput.value = lastCallee[0];
+  }catch(e){
+    lastCallee = [];
+  }
+  console.log("config readed:", user, server, deviceConfig, lastCallee);  
+}
+
+function saveConfig(){
+  if(lastCallee.length>0){
+    lastCallee = Array.from(new Set(lastCallee)); //remove same number
+    lastCallee.splice(10); //only keep n history
+    localStorage.setItem('lastcallee', JSON.stringify({history:lastCallee}));
+  }
 }
 
 var clearCall = function(e){
@@ -190,6 +204,9 @@ var clearCall = function(e){
   if(callTimer){
     clearInterval(callTimer);
   }
+
+  try{phone?.showStatus("✅"+user.name)}catch(e){}
+  try{phone?.showHistory(lastCallee)}catch(e){}
 };
 
 function setupCall(incoming = false, callex, status){
@@ -202,6 +219,7 @@ function setupCall(incoming = false, callex, status){
 
   alertMsg.innerText = infoMsg;
   infoLb.innerText = infoMsg;  
+  try{phone?.showStatus(infoMsg)}catch(e){}
 }
 
 function uaStart(){
@@ -257,6 +275,7 @@ function uaStart(){
     infoMsg = "✅" + user.name;
     document.title = infoMsg;
     regStat.innerText = infoMsg;    
+    try{phone?.showStatus(infoMsg)}catch(e){}
   });
   myPhone.on('unregistered', function(e){ 
     infoMsg = "🚫 " + user.name +" 离线";
@@ -265,12 +284,14 @@ function uaStart(){
     msgInput.disabled = true;
     callBtn.disabled = true;
     vcallBtn.disabled = true;
+    try{phone?.showStatus(infoMsg)}catch(e){}
     console.log('unregistered', e);
   });
   myPhone.on('registrationFailed', function(e){ 
     infoMsg = "🟥 " + user.name + ` 注册失败（${e.cause}）`;
     regStat.innerText = infoMsg;
     document.title = infoMsg;
+    try{phone?.showStatus(infoMsg)}catch(e){}
 
     msgInput.disabled = true;
     callBtn.disabled = true;
@@ -344,7 +365,7 @@ function uaStart(){
       setupCall(true, lastCaller, "来电");
       
       try{
-        window.phone.showMe();
+        phone?.showMe();
       }catch(e){
         console.log("not in electron", e);
       }
@@ -418,7 +439,7 @@ var answerOptions = {
 var callOptions = {
   'eventHandlers': {
     'progress':   function(data){       
-      setupCall(false, lastCallee, "振铃中");      
+      setupCall(false, lastCallee[0], "振铃中");      
       console.log("ringing", data);
     },
     'failed':     function(data){ 
@@ -429,11 +450,12 @@ var callOptions = {
       console.log('invite ready to send', data.request);
     },
     'accepted':  function(data){ 
-      setupCall(false, lastCallee, "呼叫接通");
+      setupCall(false, lastCallee[0], "呼叫接通");
       console.log("call accepted", data);
 
       callTimer = setInterval(() => {
-        infoLb.innerHTML = `<b>🟠 ${lastCallee}</b> <small>⏱️` + timeFromNow() + "</small>";        
+        infoLb.innerHTML = `<b>🟠 ${lastCallee[0]}</b> <small>⏱️` + timeFromNow() + "</small>";        
+        try{phone?.showStatus(infoLb.innerText)}catch(e){}
       }, 1000);
     },
     'confirmed': function(data){
@@ -552,7 +574,7 @@ function callOrAnswer(videocall = true){
       camBtn.hidden = videocall?false:true;
       views.selfView.srcObject = localStream; 
 
-      setVideoTrackContentHints(localStream, "detail");
+      setVideoTrackContentHints(localStream, VIDEOHINTS);
       answerOptions.mediaStream = localStream;
       callSession.answer(answerOptions);  //using default device to answer
       console.log("answer option:", answerOptions);
@@ -561,26 +583,28 @@ function callOrAnswer(videocall = true){
             
       callTimer = setInterval(() => {
         infoLb.innerHTML = `<b>🟠 ${lastCaller}</b> <small>⏱️` + timeFromNow() + "</small>";        
+        try{phone?.showStatus(infoLb.innerText)}catch(e){}
       }, 1000);
     }, function(){
       callSession.terminate();
     });    
   }else{
-    lastCallee = calleeInput.value.trim();
-    if(lastCallee.length < 1) return;
-    
+    if(calleeInput.value.trim().length < 1) return;
+    lastCallee.unshift(calleeInput.value.trim());
+    saveConfig();
+
     getLocalStream(videocall, function(localStream){
       lvDiv.style.display = videocall?"flex":"none";
       camBtn.hidden = videocall?false:true;
       views.selfView.srcObject = localStream; 
 
-      setVideoTrackContentHints(localStream, "detail");
+      setVideoTrackContentHints(localStream, VIDEOHINTS);
       callOptions.mediaStream = localStream;  //U can choose different device to callout
       console.log(callOptions);
 
-      var uri  = new JsSIP.URI('sip', lastCallee, server.domain, server.sipPort);
+      var uri  = new JsSIP.URI('sip', lastCallee[0], server.domain, server.sipPort);
       myPhone.call(uri.toAor(), callOptions);
-      console.log('dial out:', lastCallee);
+      console.log('dial out:', lastCallee[0]);
       infoLb.innerText = "呼叫中...";      
     }, function(){
       callSession?.terminate();
@@ -590,6 +614,7 @@ function callOrAnswer(videocall = true){
 
 //ui click cb
 vcallBtn.addEventListener('click', function(){
+  if(callSession && callSession.connection) return;
   vDiv.style.backgroundImage = 'url(img/cam.svg)';
   vDiv.style.backgroundRepeat = 'no-repeat';
   vDiv.style.backgroundPosition = 'center';
@@ -601,6 +626,7 @@ views.remoteView.addEventListener('loadeddata', function(){
 })
 
 callBtn.addEventListener('click', function(){   
+  if(callSession && callSession.connection) return;
   vDiv.style.backgroundImage = 'url(img/mic.svg)';
   vDiv.style.backgroundRepeat = 'no-repeat';
   vDiv.style.backgroundPosition = 'center';
@@ -631,11 +657,12 @@ msgInput.addEventListener('keydown', function(event) {
 
     var callee = calleeInput.value.trim();
     var newmsg = msgInput.value.trim();
-    lastCallee = callee;
     if(lastCallee.length < 1) return;
+    lastCallee.unshift(callee);
+    saveConfig();
 
     if(newmsg.length > 0){
-      var uri  = new JsSIP.URI('sip', lastCallee, server.domain, server.sipPort);
+      var uri  = new JsSIP.URI('sip', lastCallee[0], server.domain, server.sipPort);
       myPhone.sendMessage(uri.toAor(), newmsg, msgOptions);
 
       msgInput.value = "";
@@ -711,6 +738,7 @@ document.getElementById("about").addEventListener('click', function(){
 
 window.addEventListener("load", function(e){
   readConfig();
+  try{phone?.showHistory(lastCallee)}catch(e){}
   getMobileDevId();
   if(server.domain.length > 3){
     doReg();
@@ -722,8 +750,32 @@ window.onresize = ()=>{
 
 window.addEventListener("beforeunload", function (e) {
   console.log('ready to close?')
-  localStorage.setItem('lastcallee', lastCallee);
   myPhone?.unregister();
   callSession?.terminate();
   myPhone?.stop();
 });
+
+//electron only
+try{phone?.onNotification(data => {
+  switch(data.cmd){
+    case "acall":
+      callBtn.click();
+      break;    
+    case "vcall":
+      vcallBtn.click();
+      break;
+    case "dialpad":
+      // padBtn.click();
+      //use keyboard more fast :)
+      calleeInput.focus();
+      calleeInput.value = "";      
+      break;
+    case "hang":
+      hangBtn.click();
+      break;   
+    case "dialnum":
+      calleeInput.value = data.number;
+      break;   
+  }
+  console.log(data)
+})}catch(e){};
