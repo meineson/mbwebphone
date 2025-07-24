@@ -1,6 +1,6 @@
 const { app, Tray, Menu, nativeImage, desktopCapturer, session, BrowserWindow, TouchBar } = require('electron')
 const { TouchBarLabel, TouchBarButton, TouchBarSpacer, TouchBarScrubber, TouchBarPopover } = TouchBar
-const { systemPreferences, ipcMain } = require('electron')
+const { systemPreferences, protocol, ipcMain } = require('electron')
 const path = require('node:path');
 const { electron } = require('node:process');
 
@@ -89,7 +89,7 @@ const hangTbb = new TouchBarButton({
 })
 const numbBar = new TouchBarScrubber({
   items:[], //speed dial or history
-  selectedStyle: "background",
+  selectedStyle: "outline",
   showArrowButtons: true,
   select: (i)=>{
     console.log("select", i);
@@ -97,12 +97,12 @@ const numbBar = new TouchBarScrubber({
     mainWin.webContents.send('notification', 
       {cmd: 'dialnum', number: numbBar.items[i].label});
   },
-  highlight: (i)=>{
-    console.log("highlight", i);
-    if(i == -1) return;
-    mainWin.webContents.send('notification', 
-      {cmd: 'dialnum', number: numbBar.items[i].label});
-  },
+  // highlight: (i)=>{
+  //   console.log("highlight", i);
+  //   if(i == -1) return;
+  //   mainWin.webContents.send('notification', 
+  //     {cmd: 'dialnum', number: numbBar.items[i].label});
+  // },
   mode: 'fixed'
 })
 const touchBar = new TouchBar({
@@ -116,6 +116,28 @@ const touchBar = new TouchBar({
     hangTbb
   ]
 })
+
+// 注册协议的权限
+protocol.registerSchemesAsPrivileged([{
+  scheme: 'call',           // 自定义的协议名，比如 app://
+  privileges: {
+    secure: true,          // 表示该协议是安全的，可以使用 CSP、cookies 等
+    standard: true,        // 支持标准 URL 功能，比如 fetch、new URL()
+    corsEnabled: true,     // 允许跨域请求(适合前端访问资源)
+    supportFetchAPI: true, // 允许 fetch 使用该协议
+    stream: false          // 是否需要使用流，如果用 registerStreamProtocol，改为 true
+  }
+}]);
+// app.setAsDefaultProtocolClient('call'); //reg call:// protocal
+app.on('open-url', (event, url) => {
+  console.log(`Handling custom protocol: ${url}`);
+  var callee = url.slice('call://'.length)
+  if(callee.length > 1){
+    mainWin.webContents.send('notification', 
+      {cmd: 'dialnum', number: callee});
+    mainWin.webContents.send('notification', {cmd: 'vcall'});
+  }
+});
 
 app.whenReady().then(() => {
   checkAndApplyDeviceAccessPrivilege();
