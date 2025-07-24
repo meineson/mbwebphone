@@ -762,7 +762,6 @@ try{phone?.onNotification(data => {
       callBtn.click();
       break;    
     case "vcall":
-      if(data.number)
       vcallBtn.click();
       break;
     case "dialpad":
