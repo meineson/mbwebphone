@@ -1,6 +1,5 @@
 var server = {
   domain: '',   //172.21.2.210
-  sipPort: 8060,
   // wsServers: 'wss://172.21.2.210:7443', //wss for https://, http://
   wsServers: '',  //ws://172.21.2.210:5066 ws for http://, only localhost work, or set chrome://flags#unsafely-treat-insecure-origin-as-secure=http://ip:port
   // stunServer: '' //stun:172.21.2.210:3478
@@ -202,7 +201,7 @@ function setupCall(incoming = false, callex, status){
 }
 
 function uaStart(){
-  var uri  = new JsSIP.URI('sip', user.name, server.domain, server.sipPort);
+  var uri  = new JsSIP.URI('sip', user.name, server.domain);
   uri.setParam('transport', server.wsServers.split(":")[0]);  //get ws or wss
   
   var socket = new JsSIP.WebSocketInterface(server.wsServers);
@@ -217,6 +216,7 @@ function uaStart(){
     password : user.authPwd,
     register: true,
     register_expires: user.regExpires,
+    registrar_server: "sip:"+server.domain,
     connection_recovery_max_interval: 10,
     user_agent: VERSION
   };
@@ -575,7 +575,7 @@ function callOrAnswer(videocall = true){
       callOptions.mediaStream = localStream;  //U can choose different device to callout
       console.log(callOptions);
 
-      var uri  = new JsSIP.URI('sip', lastCallee, server.domain, server.sipPort);
+      var uri  = new JsSIP.URI('sip', lastCallee[0], server.domain);
       myPhone.call(uri.toAor(), callOptions);
       console.log('dial out:', lastCallee);
       infoLb.innerText = "呼叫中...";      
@@ -632,7 +632,7 @@ msgInput.addEventListener('keydown', function(event) {
     if(lastCallee.length < 1) return;
 
     if(newmsg.length > 0){
-      var uri  = new JsSIP.URI('sip', lastCallee, server.domain, server.sipPort);
+      var uri  = new JsSIP.URI('sip', lastCallee[0], server.domain);
       myPhone.sendMessage(uri.toAor(), newmsg, msgOptions);
 
       msgInput.value = "";
