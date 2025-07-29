@@ -7,6 +7,23 @@ var server = {
   // stunServer: '' //stun:172.21.2.210:3478
 };
 
+const iceServers = 
+// [{
+//   'urls': 'stun:stun.l.google.com:19302'
+// }];
+[
+  {
+  'urls': 'turn:172.21.135.10:13478?transport=tcp',
+  'username': "simton",
+  'credential': "santong123",
+},
+{
+  'urls': 'turn:turn.econf.cn:13478?transport=tcp',
+  'username': "simton",
+  'credential': "santong123",
+}
+];
+
 //default user
 var user = {
     disName: '',
@@ -314,11 +331,14 @@ function uaStart(){
    
     //fix call,answer too slow problem
     callSession.on("icecandidate", function (e) {
+      console.log("icecandidate:", e.candidate.address, e.candidate.type);
       if ( typeof e.candidate === "object" &&         
           typeof e.candidate.type === "string" && 
-          ["srflx", "rely"].includes(e.candidate.type))
-        e.ready();
-      console.log("icecandidate:", e);
+          ["srflx", "relay"].includes(e.candidate.type)){
+          // ["relay"].includes(e.candidate.type)){
+            e.ready();
+            console.log("ice ready");
+          }
     });
 
     callSession.on('ended', clearCall);
@@ -431,9 +451,12 @@ function timeFromNow() {
 
 var answerOptions = {
   // 'mediaConstraints': {'audio': {deviceId: deviceConfig.audioin}, 'video': videoConstraints},//video flag set by checkbox latter
-  // 'pcConfig': {
-  //   'iceServers': [{urls: server.stunServer}]
-  // }
+  'pcConfig': {
+    'iceServers': iceServers,
+    'iceTransportPolicy': "all",  //relay, all
+    // 'bundlePolicy': "max-bundle",
+    'rtcpMuxPolicy': "require"
+  }
 };
 
 var callOptions = {
@@ -470,9 +493,12 @@ var callOptions = {
     }
   },
   // 'mediaConstraints': {'audio': {deviceId: deviceConfig.audioin}, 'video': videoConstraints},  //video flag set by checkbox latter
-  // 'pcConfig': {
-  //     'iceServers': [{urls: server.stunServer}]
-  // },
+  'pcConfig': {
+    'iceServers': iceServers,
+    'iceTransportPolicy': "all",  //relay, all
+    // 'bundlePolicy': "max-bundle",
+    'rtcpMuxPolicy': "require"
+  },
   sessionTimersExpires: 120  //freeswitch过短会呼叫失败
 };
 
