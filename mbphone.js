@@ -21,6 +21,9 @@ const iceServers =
   'urls': 'turn:turn.econf.cn:13478?transport=tcp',
   'username': "simton",
   'credential': "santong123",
+},
+{
+  'urls': 'stun:stun.l.google.com:19302'
 }
 ];
 
