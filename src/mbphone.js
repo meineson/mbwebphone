@@ -36,6 +36,7 @@ var lastCaller = '';  //incoming caller
 const VERSION = "MeConf v1.3.3"
 const MAX_BITRATE = 2*1024*1024;  //2M
 const VIDEO_MAX = {width:1280, height:720};
+const VIDEOHINTS = "motion";  //canbe detail,motion,text
 
 function showVersion(){
   //show electron about or failed to js alert
@@ -575,7 +576,7 @@ function callOrAnswer(videocall = true){
       camBtn.hidden = videocall?false:true;
       views.selfView.srcObject = localStream; 
 
-      setVideoTrackContentHints(localStream, "detail");
+      setVideoTrackContentHints(localStream, VIDEOHINTS);
       answerOptions.mediaStream = localStream;
       callSession.answer(answerOptions);  //using default device to answer
       console.log("answer option:", answerOptions);
@@ -597,11 +598,11 @@ function callOrAnswer(videocall = true){
       camBtn.hidden = videocall?false:true;
       views.selfView.srcObject = localStream; 
 
-      setVideoTrackContentHints(localStream, "detail");
+      setVideoTrackContentHints(localStream, VIDEOHINTS);
       callOptions.mediaStream = localStream;  //U can choose different device to callout
       console.log(callOptions);
 
-      var uri  = new JsSIP.URI('sip', lastCallee[0], server.domain);
+      var uri  = new JsSIP.URI('sip', lastCallee, server.domain);
       myPhone.call(uri.toAor(), callOptions);
       console.log('dial out:', lastCallee);
       infoLb.innerText = "呼叫中...";      
@@ -658,7 +659,7 @@ msgInput.addEventListener('keydown', function(event) {
     if(lastCallee.length < 1) return;
 
     if(newmsg.length > 0){
-      var uri  = new JsSIP.URI('sip', lastCallee[0], server.domain);
+      var uri  = new JsSIP.URI('sip', lastCallee, server.domain);
       myPhone.sendMessage(uri.toAor(), newmsg, msgOptions);
 
       msgInput.value = "";
