@@ -592,7 +592,8 @@ function callOrAnswer(videocall = true){
   }else{
     lastCallee = calleeInput.value.trim();
     if(lastCallee.length < 1) return;
-    
+    localStorage.setItem('lastcallee', lastCallee);
+
     getLocalStream(videocall, function(localStream){
       lvDiv.style.display = videocall?"flex":"none";
       camBtn.hidden = videocall?false:true;
@@ -657,6 +658,7 @@ msgInput.addEventListener('keydown', function(event) {
     var newmsg = msgInput.value.trim();
     lastCallee = callee;
     if(lastCallee.length < 1) return;
+    localStorage.setItem('lastcallee', lastCallee);
 
     if(newmsg.length > 0){
       var uri  = new JsSIP.URI('sip', lastCallee, server.domain);
@@ -745,8 +747,7 @@ window.onresize = ()=>{
 }
 
 window.addEventListener("beforeunload", function (e) {
-  console.log('ready to close?')
-  localStorage.setItem('lastcallee', lastCallee);
+  console.log('ready to close?')  
   myPhone?.unregister();
   callSession?.terminate();
   myPhone?.stop();
