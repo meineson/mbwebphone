@@ -14,7 +14,7 @@
     "start": "npm run webdev && electron . --remote-debugging-port=9222 --trace-warnings",
     "webrel": "webpack --mode=production",
     "web": "npm run webrel && mkdir -p ./dist && tar zcvf ./dist/MeConf_web.tgz index.html config.html mbphone.bundle.js miniweb.js mbweb.css favicon.ico img/*",
-    "mac": "npm run webrel && electron-builder -m dmg",
+    "mac": "npm run webrel && electron-builder -m dmg --x64 --arm64",
     "win": "npm run webrel && electron-builder -w portable",
     "lin": "npm run webrel && electron-builder -l deb",
     "dist": "npm run web & electron-builder -m dmg & electron-builder -w nsis & electron-builder -l deb"

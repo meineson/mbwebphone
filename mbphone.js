@@ -13,12 +13,12 @@ const iceServers =
 // }];
 [
   {
-  'urls': 'turn:172.21.135.10:13478?transport=tcp',
+  'urls': 'turn:172.21.136.230:13478',
   'username': "simton",
   'credential': "santong123",
 },
 {
-  'urls': 'turn:turn.econf.cn:13478?transport=tcp',
+  'urls': 'turn:turn.econf.cn:13478',
   'username': "simton",
   'credential': "santong123",
 },
@@ -725,10 +725,12 @@ camBtn.onclick = function(){
   if(muteS.video){
     callSession.unmute({video: true});
     camBtn.style.filter = "";
+    lvDiv.style.visibility = "";
   }else{
     callSession.mute({video: true});
     lvDiv.style.backgroundImage = 'url(img/mic.svg)';
     camBtn.style.filter = "grayscale(100%)";
+    lvDiv.style.visibility = "hidden";
   }
 }
 
