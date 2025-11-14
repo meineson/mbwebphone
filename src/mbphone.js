@@ -137,6 +137,19 @@ function setVideoBitrate(peerConnection, bitrate){
   });
 }
 
+function setSdpBitrate(sdpstr, start, min, max){
+  var arr = sdpstr.split('\r\n');
+  arr.forEach((str, i) => {
+    if (/^a=fmtp:\d*/.test(str)) {
+      //x-google-max-quantization=56
+      arr[i] = `${str};x-google-max-bitrate=${max};x-google-min-bitrate=${min};x-google-start-bitrate=${start}`;
+    } else if (/^a=mid:(1|video)/.test(str)) {
+      arr[i] += '\r\nb=AS:20000';
+    }
+  });
+  return arr.join('\r\n');     
+}
+
 function setVideoTrackContentHints(stream, hint) {
   const tracks = stream.getVideoTracks();
   tracks.forEach((track) => {
@@ -448,6 +461,15 @@ var callOptions = {
     },
     'sending': function(data){
       console.log('invite ready to send', data.request);
+            var body = data.request.body;
+      //packetization-mode=0; fix some video phone
+      //sps-pps-idr-in-keyframe=1; fix some decoder
+      // data.request.body = body.replaceAll("level-asymmetry-allowed=1", 
+      //   "level-asymmetry-allowed=1;sps-pps-idr-in-keyframe=1");
+      // data.request.body = body.replaceAll("level-asymmetry-allowed=1", 
+      //   "level-asymmetry-allowed=1;x-google-max-bitrate=2000;x-google-min-bitrate=1000;x-google-start-bitrate=1500");       
+      data.request.body = setSdpBitrate(body, START_BITRATE, 0, MAX_BITRATE);
+      // console.log('updaed invite:', data.request);
     },
     'accepted':  function(data){ 
       setupCall(false, lastCallee, "呼叫接通");
