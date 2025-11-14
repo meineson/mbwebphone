@@ -34,6 +34,7 @@ var lastCallee = '';
 var lastCaller = '';  //incoming caller
 
 const VERSION = "MeConf v1.3.3"
+const START_BITRATE = 1*1024*1024;  //2M
 const MAX_BITRATE = 2*1024*1024;  //2M
 const VIDEO_MAX = {width:1280, height:720};
 const VIDEOHINTS = "motion";  //canbe detail,motion,text
@@ -99,8 +100,11 @@ var portraitMode = isMobile?true:false;
 function changeLocalPreview(){
   console.log("local preview portraitMode:", portraitMode);
   portraitMode = (window.innerWidth/window.innerHeight > 1)?false:true;
-  lvDiv.style.width = portraitMode?"130px":"356px";
-  lvDiv.style.height = portraitMode?"230px":"200px";
+  // lvDiv.style.width = portraitMode?"130px":"356px";
+  // lvDiv.style.height = portraitMode?"230px":"200px";
+  lvDiv.style.height = "25%";
+  lvDiv.style.width = "";
+  lvDiv.style.aspectRatio = portraitMode?"9/16":"16/9"
 }
 
 function getMobileDevId(){
@@ -469,6 +473,8 @@ var callOptions = {
       // data.request.body = body.replaceAll("level-asymmetry-allowed=1", 
       //   "level-asymmetry-allowed=1;x-google-max-bitrate=2000;x-google-min-bitrate=1000;x-google-start-bitrate=1500");       
       data.request.body = setSdpBitrate(body, START_BITRATE, 0, MAX_BITRATE);
+      data.request.body = data.request.body.replace(/a=fmtp:111 minptime=10/, "a=fmtp:111 minptime=10;stereo=1;maxaveragebitrate=128000");
+
       // console.log('updaed invite:', data.request);
     },
     'accepted':  function(data){ 
@@ -717,8 +723,10 @@ camBtn.onclick = function(){
   if(muteS.video){
     callSession.unmute({video: true});
     camBtn.style.filter = "";
+    lvDiv.style.display = "flex";
   }else{
     callSession.mute({video: true});
+    lvDiv.style.display = "none";
     lvDiv.style.backgroundImage = 'url(img/mic.svg)';
     camBtn.style.filter = "grayscale(100%)";
   }

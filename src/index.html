@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" href="./mbweb.css" />
   <script src="./jssip-3.10.0.min.js"></script>
-  <title>MeConf 咪呼</title>
+  <title>MeConf 视频终端</title>
 </head>
 
 <body>
@@ -16,7 +16,9 @@
         <p>Your browser doesn't support HTML5 video.</p>
       </video>
       <div class="video-local" id="lvdiv">
-        <video id="local-video" width="100%" muted autoplay disablepictureinpicture playsinline poster="no">
+        <video id="local-video" width="100%"
+          style="object-fit: cover;"
+          muted autoplay disablepictureinpicture playsinline poster="no">
           <p>Your browser doesn't support HTML5 video.</p>
         </video>
       </div>

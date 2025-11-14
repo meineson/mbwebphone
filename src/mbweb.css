@@ -62,11 +62,12 @@ span {
   background: black;
   position: absolute;
   border: 1px solid lightgrey;
-  height: 230px;
-  width: 130px;
+  height: 25%;
+  aspect-ratio: 16/9;
+  /* width: 130px; */
   bottom: 5px;
   right: 5px;
-  z-index: 2;
+  z-index: 2;  
   /* transform: scaleX(-1); */
   background-image: url("img/no-video.png");
   background-repeat: no-repeat;
